@@ -254,3 +254,177 @@ public class Solution {
         return num[right];
     }
 }
+
+/*
+Find Peak Element
+
+There is an integer array which has the following features:
+
+The numbers in adjacent positions are different.
+A[0] < A[1] && A[A.length - 2] > A[A.length - 1].
+We define a position P is a peek if:
+
+A[P] > A[P-1] && A[P] > A[P+1]
+Find a peak element in this array. Return the index of the peak.
+
+Example
+Given [1, 2, 1, 3, 4, 5, 7, 6]
+
+
+Return index 1 (which is number 2) or 6 (which is number 7)
+
+7 8 5 3 4 9 11 
+1 3 2 5 7 9 8
+
+Note
+The array may contains multiple peeks, find any of them.
+
+Challenge
+Time complexity O(logN)
+*/
+
+class Solution {
+    /**
+     * @param A: An integers array.
+     * @return: return any of peek positions.
+     */
+    public int findPeak(int[] A) {
+        int l = 0, r = A.length-1;
+        while(l < r){
+        	int m = l+r>>1;
+        	// If A[m] < A[m+1], there must be a peak in the right; Why?
+        	// If starting from m+1, all elements in the array is an increasing sequence, 
+        	// then the last elemnt will be the peak.
+        	// If is not an increasing sequence, then there must be a peak somewhere.
+        	// Otherwise, there must be a peak in the left. The reason is similar.
+        	if(A[m] < A[m+1]) l = m+1;
+        	else r = m;
+        }
+        return r;
+    }
+}
+
+/*
+First Bad Version
+
+34% Accepted
+The code base version is an integer start from 1 to n. One day, 
+someone committed a bad version in the code case, 
+so it caused this version and the following versions are all failed in the unit tests. 
+Find the first bad version.
+
+You can call isBadVersion to help you determine which version is the first bad one. 
+The details interface can be found in the code's annotation part.
+
+Example
+Given n = 5:
+
+isBadVersion(3) -> false
+isBadVersion(5) -> true
+isBadVersion(4) -> true
+Here we are 100% sure that the 4th version is the first bad version.
+
+Note
+Please read the annotation in code area to get the correct way to call isBadVersion in different language. For example, Java is VersionControl.isBadVersion(v)
+
+Challenge
+You should call isBadVersion as few as possible.
+*/
+
+/**
+ * public class VersionControl {
+ *     public static boolean isBadVersion(int k);
+ * }
+ * you can use VersionControl.isBadVersion(k) to judge whether 
+ * the kth code version is bad or not.
+*/
+class Solution {
+    /**
+     * 000011111111
+     * @param n: An integers.
+     * @return: An integer which is the first bad version.
+     */
+    public int findFirstBadVersion(int n) {
+        int l = 1, r = n;
+        while(l < r){
+        	int m = l+r>>1;
+        	if(VersionControl.isBadVersion(m)) r = m;
+        	else l = m+1;
+        }
+        return VersionControl.isBadVersion(r) ? r : r+1;
+    }
+}
+
+/*
+Search in Rotated Sorted Array
+
+Suppose a sorted array is rotated at some pivot unknown to you beforehand.
+
+(i.e., 0 1 2 4 5 6 7 might become 4 5 6 7 0 1 2).
+
+You are given a target value to search. If found in the array return its index, otherwise return -1.
+
+You may assume no duplicate exists in the array.
+
+Example
+For [4, 5, 1, 2, 3] and target=1, return 2.
+
+For [4, 5, 1, 2, 3] and target=0, return -1.
+
+Challenge
+O(logN) time
+*/
+
+public class Solution {
+    /** 
+     *@param A : an integer rotated sorted array
+     *@param target :  an integer to be searched
+     *return : an integer
+     */
+    public int search(int[] A, int target) {
+        if(A==null || A.length==0) return -1;
+        int l = 0, r = A.length-1;
+        while(l < r){
+        	int m = l+r>>1;
+        	if(A[m] == target) return m;
+        	if(A[m] >= A[0]){
+        		if(target < A[m] && target >= A[0]) r = m;
+        		else l = m+1;
+        	}
+        	else{
+        		if(target > A[m] && target <= A[A.length-1]) l = m+1;
+        		else r = m;
+        	}
+        }
+        return A[r] == target ? r : -1;
+    }
+}
+
+/*
+Medium Search for a Range
+
+Given a sorted array of n integers, find the starting and ending position of a given target value.
+
+If the target is not found in the array, return [-1, -1].
+
+Example
+Given [5, 7, 7, 8, 8, 10] and target value 8, return [3, 4].
+
+Challenge
+O(log n) time.
+*/
+
+public class Solution {
+    /** 
+     *@param A : an integer sorted array
+     *@param target :  an integer to be inserted
+     *return : a list of length 2, [index1, index2]
+     */
+    public int[] searchRange(int[] A, int target) {
+        if(A == null || A.length == 0) return {-1, -1};
+        int l = 0, r = A.length-1;
+        while(l<r){
+        	int mid
+        }
+    }
+}
