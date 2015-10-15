@@ -421,10 +421,29 @@ public class Solution {
      *return : a list of length 2, [index1, index2]
      */
     public int[] searchRange(int[] A, int target) {
-        if(A == null || A.length == 0) return {-1, -1};
+        int[] res = new int[2];
+        Arrays.fill(res, -1);
+        if(A == null || A.length == 0) return res;
+        
         int l = 0, r = A.length-1;
         while(l<r){
-        	int mid
+            int m = l+r>>1;
+            if(A[m] >= target) r = m;
+            else l = m+1;
         }
+        res[0] = A[l] == target ? l : -1;
+
+        l = 0; r = A.length-1;
+        while(l < r){
+            int m = l+r>>1;
+            if(A[m] == target && A[m+1] != target){
+                res[1] = m;
+                return res;
+            }
+            if(A[m] <= target) l = m+1;
+            else r = m;
+        }
+        res[1] = A[l] == target ? l : -1;
+        return res;
     }
 }
