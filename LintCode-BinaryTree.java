@@ -224,7 +224,8 @@ public class Solution {
 }
 
 /*
-Medium Construct Binary Tree from Preorder and Inorder Traversal
+Medium 
+Construct Binary Tree from Preorder and Inorder Traversal
 
 27% Accepted
 Given preorder and inorder traversal of a tree, construct the binary tree.
@@ -246,7 +247,24 @@ public class Solution {
      *@return : Root of a tree
      */
     public TreeNode buildTree(int[] preorder, int[] inorder) {
-        // write your code here
+        if(preorder == null || inorder == null || preorder.length == 0 || inorder.length == 0 || preorder.length != inorder.length) return null;
+        return buildTree(preorder, inorder, 0, 0, inorder.length-1);
+    }
+
+    public TreeNode buildTree(int[] preorder, int[] inorder, int preStart, int inStart, int inEnd){
+        if(preStart >= preorder.length) return null;
+        int rootVal = preorder[preStart];
+        TreeNode root = new TreeNode(rootVal);
+        int inRoot = -1;
+        for(int i = inStart; i <= inEnd; i++){
+            if(inorder[i] == rootVal) {
+                inRoot = i; 
+                break;
+            }
+        }
+        root.left = inRoot == inStart ? null : buildTree(preorder, inorder, preStart+1, inStart, inRoot-1);
+        root.right = inRoot == inEnd ? null : buildTree(preorder, inorder, preStart+inRoot-inStart+1, inRoot+1, inEnd);
+        return root;
     }
 }
 
@@ -285,7 +303,24 @@ public class Solution {
      * @return: Level order a list of lists of integer
      */
     public ArrayList<ArrayList<Integer>> levelOrder(TreeNode root) {
-        // write your code here
+        ArrayList<ArrayList<Integer>> res = new ArrayList();
+        if(root == null) return res;
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.offer(root);
+
+        while(!queue.isEmpty()){
+            int size = queue.size();
+            ArrayList<Integer> curLevel = new ArrayList();
+            // Poll out all TreeNode in cur level.
+            for(int i = 0; i < size; i++){
+                TreeNode front = queue.poll();
+                curLevel.add(front.val);
+                if(front.left != null) queue.offer(front.left);
+                if(front.right != null) queue.offer(front.right);
+            }
+            res.add(curLevel);
+        }
+        return res;
     }
 }
 
@@ -314,6 +349,23 @@ public class Solution {
      */
     public ArrayList<Integer> searchRange(TreeNode root, int k1, int k2) {
         // write your code here
+        ArrayList<Integer> res = new ArrayList();
+        if(root == null) return res;
+        Stack<TreeNode> stack = new Stack();
+        addLeftChild(root, stack);
+        while(!stack.isEmpty()){
+            TreeNode front = stack.pop();
+            if(front.val >= k1 && front.val <= k2) res.add(front.val);
+            if(front.right != null) addLeftChild(front.right, stack);
+        }
+        return res;
+    }
+
+    private void addLeftChild(TreeNode root, Stack<TreeNode> stack){
+        while(root != null) {
+            stack.push(root);
+            root = root.left;
+        }
     }
 }
 
@@ -321,11 +373,11 @@ public class Solution {
 Medium Binary Tree Serialization
 
 16% Accepted
-Design an algorithm and write code to serialize and deserialize a binary tree. Writing the tree to a file is called 'serialization' and reading back from the file to reconstruct the exact same binary tree is 'deserialization'.
+Design an algorithm and write code to serialize and deserialize a binary tree. 
+Writing the tree to a file is called 'serialization' and reading back from the file to reconstruct the exact same binary tree is 'deserialization'.
 
 There is no limit of how you deserialize or serialize a binary tree, you only need to make sure you can serialize a binary tree to a string and deserialize this string to the original structure.
 
-Have you met this question in a real interview? Yes
 Example
 An example of testdata: Binary tree {3,9,20,#,#,15,7}, denote the following structure:
 
@@ -347,6 +399,37 @@ class Solution {
      */
     public String serialize(TreeNode root) {
         // write your code here
+        StringBuilder res = new StringBuilder();
+        if(root == null) return res.toString();
+        int height = getHeight(root);
+        Queue<TreeNode> queue = new LinkedList();
+        queue.offer(root);
+        res.append(root.val+",");
+        int level = 1;
+        while(!queue.isEmpty()){
+            int size = queue.size();
+            for(int i = 0; i < size; i++){
+                TreeNode front = queue.poll();
+                if(front.left != null){
+                    queue.offer(front.left);
+                    res.append(front.left.val+",");
+                } 
+                else if(level != height) res.append("#,");
+                if(front.right != null) {
+                    queue.offer(front.right);
+                    res.append(front.right.val+",");
+                }
+                else if(level != height) res.append("#,");
+            }
+            level++;
+        }
+
+        return res.toString();
+    }
+
+    public int getHeight(TreeNode root){
+        if(root == null) return 0;
+        return 1 + Math.max(getHeight(root.left), getHeight(root.right));
     }
     
     /**
@@ -357,15 +440,32 @@ class Solution {
      * "serialize" method.
      */
     public TreeNode deserialize(String data) {
-        // write your code here
+        if(data == null || data.length() == 0) return null;
+        String[] nodes = data.split(",");
+        TreeNode root = new TreeNode(Integer.valueOf(nodes[0]));
+        Queue<TreeNode> queue = new LinkedList();
+        queue.offer(root);
+        int nodeIndex = 0;
+        while(!queue.isEmpty() && (nodeIndex*2+1 < nodes.length)){
+            TreeNode front = queue.poll();
+            String leftVal = nodes[nodeIndex*2+1], rightVal = nodes[nodeIndex*2+2];
+            front.left = leftVal.equals("#") ? null : new TreeNode(Integer.valueOf(leftVal));
+            front.right = rightVal.equals("#") ? null : new TreeNode(Integer.valueOf(rightVal));            
+            if(front.left != null) queue.offer(front.left);
+            if(front.right != null) queue.offer(front.right);
+            nodeIndex++;
+        }
+        return root;
     }
 }
 
 /*
-Hard Remove Node in Binary Search Tree
+Hard 
+Remove Node in Binary Search Tree
 
 25% Accepted
-Given a root of Binary Search Tree with unique value for each node.  Remove the node with given value. If there is no such a node with given value in the binary search tree, do nothing. You should keep the tree still a binary search tree after removal.
+Given a root of Binary Search Tree with unique value for each node.  Remove the node with given value. 
+If there is no such a node with given value in the binary search tree, do nothing. You should keep the tree still a binary search tree after removal.
 
 Have you met this question in a real interview? Yes
 Example
@@ -378,9 +478,7 @@ Given binary search tree:
     3          6
 
  /    \
-
 2       4
-
 Remove 3, you can either return:
 
           5
@@ -413,6 +511,50 @@ public class Solution {
      * @return: The root of the binary search tree after removal.
      */
     public TreeNode removeNode(TreeNode root, int value) {
-        // write your code here
+        if(root == null) return root;
+        if(root.val == value){
+            if (root.left == null && root.right == null) return null;
+            if(root.right == null) return root.left;
+            root.val = removeSmallestRightChild(root, root.right);
+            return root;
+        } 
+        TreeNode parent = root;
+        TreeNode node = root.val > value ? root.left : root.right;
+        while(node!=null){
+            if(node.val < value){
+                parent = node;
+                node = node.right;
+            } 
+            else if(node.val > value){
+                parent = node;
+                node = node.left;
+            } 
+            else{
+                if(node.right == null && node.left == null) node = null;
+                else if(node.right == null){
+                    if(parent.left == node) parent.left = node.left;
+                    else parent.right = node.left;
+                    break;
+                } 
+                else {
+                    node.val = removeSmallestRightChild(node, node.right);
+                    break;
+                }
+            }
+        }
+        return root;
+    }
+
+    private int removeSmallestRightChild(TreeNode parent, TreeNode child){
+        if(child.left == null){
+            parent.right = child.right;
+            return child.val; 
+        } 
+        while(child.left != null){
+            parent = child;
+            child = child.left;
+        }
+        parent.left = child.right;
+        return child.val;
     }
 }
