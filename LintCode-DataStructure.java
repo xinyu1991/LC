@@ -140,21 +140,30 @@ Note
 min operation will never be called if there is no number in the stack.
 */
 public class MinStack {
-    
+    private Stack<Integer> stack;
+    private Stack<Integer> minStack;
     public MinStack() {
         // do initialize if necessary
+        stack = new Stack();
+        minStack = new Stack();
     }
 
     public void push(int number) {
-        // write your code here
+    	// 5 1 3 2 8 4
+        stack.push(number);
+        if(minStack.isEmpty() || minStack.peek() >= number){
+        	minStack.push(number);
+        }
     }
 
     public int pop() {
-        // write your code here
+    	int val = stack.pop();
+        if(minStack.peek() == val) minStack.pop();
+        return val;
     }
 
     public int min() {
-        // write your code here
+        return minStack.peek();
     }
 }
 
@@ -180,7 +189,17 @@ class Solution {
      * @return: The kth prime number as description.
      */
     public long kthPrimeNumber(int k) {
-        // write your code here
+        ArrayList<Long> list = new ArrayList();
+        list.add(1);
+        int i3, i5, i7;
+        for(int i = 1; i <= k; i++){
+        	long cur = Math.min(list.get(i3)*3, Math.min(list.get(i5)*5, list.get(i7)*7));
+        	list.add(cur);
+        	if(cur == list.get(i3)*3) i3++;
+        	if(cur == list.get(i5)*5) i5++;
+        	if(cur == list.get(i7)*7) i7++;
+        }
+        return list.get(k);
     }
 };
 
@@ -294,5 +313,73 @@ public class Solution {
      */
     public int[] medianII(int[] nums) {
         // write your code here
+    }
+}
+
+
+/* Medium 
+Implement Trie
+
+20% Accepted
+Implement a trie with insert, search, and startsWith methods.
+
+Have you met this question in a real interview? Yes
+Example
+Note
+You may assume that all inputs are consist of lowercase letters a-z.
+*/
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * Trie trie = new Trie();
+ * trie.insert("lintcode");
+ * trie.search("lint"); will return false
+ * trie.startsWith("lint"); will return true
+ */
+class TrieNode {
+    // Initialize your data structure here.
+    public TrieNode() {
+        TrieNode[] children = new TrieNode[26];
+        boolean isWord = false;
+    }
+}
+
+public class Solution {
+    private TrieNode root;
+
+    public Solution() {
+        root = new TrieNode();
+    }
+
+    // Inserts a word into the trie.
+    public void insert(String word) {
+        TrieNode node = root;
+        for(int i = 0; i < word.length(); i++){
+        	int index = word.charAt(i) - 'a';
+        	if(node.children[index] == null) node.children[index] = new TrieNode();
+        	node = node.children[index];
+        }
+        node.isWord = true;
+    }
+
+    // Returns if the word is in the trie.
+    public boolean search(String word) {
+        TrieNode node = root;
+        for(char c : word){
+        	if(node.children[c-'a'] == null) return false;
+        	node = node.children[c-'a'];
+        }
+        return node.isWord;
+    }
+
+    // Returns if there is any word in the trie
+    // that starts with the given prefix.
+    public boolean startsWith(String prefix) {
+        TrieNode node = root;
+        for (char c : word) {
+        	if(node.children[c-'a'] == null) return false;
+        	node = node.children[c-'a'];
+        }
+        return true;
     }
 }
