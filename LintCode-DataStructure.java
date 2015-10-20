@@ -60,7 +60,7 @@ public class Solution {
      * @return: The head of one sorted list.
      */
     public ListNode mergeKLists(List<ListNode> lists) {  
-        // write your code here
+        if()
     }
 }
 

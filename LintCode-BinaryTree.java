@@ -131,6 +131,49 @@ public class Solution {
 }
 
 /*
+Easy Binary Tree Postorder Traversal
+
+37% Accepted
+Given a binary tree, return the postorder traversal of its nodes' values.
+
+Have you met this question in a real interview? Yes
+Example
+Given binary tree {1,#,2,3},
+
+   1
+    \
+     2
+    /
+   3
+ 
+
+return [3,2,1].
+
+Challenge
+Can you do it without recursion?
+*/
+public class Solution {
+    /**
+     * @param root: The root of binary tree.
+     * @return: Postorder in ArrayList which contains node values.
+     */
+    public ArrayList<Integer> postorderTraversal(TreeNode root) {
+        ArrayList<Integer> res = new ArrayList();
+        postorderRec(root, res);
+        return res;
+    }
+
+    public void postorderRec(TreeNode node, ArrayList<Integer> res){
+        if(node == null) return;
+        postorderRec(node.left, res);
+        postorderRec(node.right, res);
+        res.add(node.val);
+    }
+}
+
+
+
+/*
 Medium Validate Binary Search Tree
 
 22% Accepted
@@ -556,5 +599,142 @@ public class Solution {
         }
         parent.left = child.right;
         return child.val;
+    }
+}
+
+
+/*
+Easy Subtree Show result 
+
+20% Accepted
+You have two every large binary trees: T1, with millions of nodes, and T2, with hundreds of nodes. Create an algorithm to decide if T2 is a subtree of T1.
+
+Have you met this question in a real interview? Yes
+Example
+T2 is a subtree of T1 in the following case:
+
+       1                3
+      / \              / 
+T1 = 2   3      T2 =  4
+        /
+       4
+T2 isn't a subtree of T1 in the following case:
+
+       1               3
+      / \               \
+T1 = 2   3       T2 =    4
+        /
+       4
+Note
+A tree T2 is a subtree of T1 if there exists a node n in T1 such that the subtree of n is identical to T2. That is, if you cut off the tree at node n, the two trees would be identical.
+*/
+
+public class Solution {
+    /**
+     * @param T1, T2: The roots of binary tree.
+     * @return: True if T2 is a subtree of T1, or false.
+     */
+    public boolean isSubtree(TreeNode T1, TreeNode T2) {
+        if(T2 == null) return true;
+        if(T1 == null) return false;
+        TreeNode node = T1;
+        if(isSameTree(T1, T2)) return true;
+        return isSubtree(T1.left, T2) || isSubtree(T1.right, T2);
+    }
+    
+    public boolean isSameTree(TreeNode T1, TreeNode T2){
+        if(T1 == null && T2 == null) return true;
+        if(T1 == null || T2 == null) return false;
+        return T1.val == T2.val && isSameTree(T1.left, T2.left) && isSameTree(T1.right, T2.right);
+    }
+}
+
+/*
+Medium Convert Binary Search Tree to Doubly Linked List Show result 
+
+26% Accepted
+Convert a binary search tree to doubly linked list with in-order traversal.
+
+Have you met this question in a real interview? Yes
+Example
+Given a binary search tree:
+
+    4
+   / \
+  2   5
+ / \
+1   3
+return 1<->2<->3<->4<->5
+*/
+
+public class Solution {
+    /**
+     * @param root: The root of tree
+     * @return: the head of doubly list node
+     */
+    public DoublyListNode bstToDoublyList(TreeNode root) {  
+        if(root == null) return null;
+        Stack<TreeNode> stack = new Stack();
+        addLeftChild(root, stack);
+        DoublyListNode dummy = new DoublyListNode(-1);
+        DoublyListNode cur = dummy;
+        while(!stack.isEmpty()){
+            TreeNode top = stack.pop();
+            cur.next = new DoublyListNode(top.val);
+            cur.next.prev = cur;
+            cur = cur.next;
+            if(top.right != null) addLeftChild(top.right, stack);
+        }
+        DoublyListNode head = dummy.next;
+        head.prev = null;
+        return head;
+        
+    }
+    private void addLeftChild(TreeNode node, Stack<TreeNode> stack){
+        while(node != null){
+            stack.push(node);
+            node = node.left;
+        }
+    }   
+}
+
+/*
+Medium Lowest Common Ancestor
+
+33% Accepted
+Given the root and two nodes in a Binary Tree. Find the lowest common ancestor(LCA) of the two nodes.
+
+The lowest common ancestor is the node with largest depth which is the ancestor of both nodes.
+
+Have you met this question in a real interview? Yes
+Example
+For the following binary tree:
+
+  4
+ / \
+3   7
+   / \
+  5   6
+LCA(3, 5) = 4
+
+LCA(5, 6) = 7
+
+LCA(6, 7) = 7
+*/
+public class Solution {
+    /**
+     * @param root: The root of the binary search tree.
+     * @param A and B: two nodes in a Binary.
+     * @return: Return the least common ancestor(LCA) of the two nodes.
+     */
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode A, TreeNode B) {
+        if(root == null) return null;
+        if(root.val == A.val || root.val == B.val) return root;
+        TreeNode left = lowestCommonAncestor(root.left, A, B);
+        TreeNode right = lowestCommonAncestor(root.right, A, B);
+        if(left != null && right != null) return root;
+        if(left != null) return left;
+        if(right != null) return right;
+        return null;
     }
 }
