@@ -1,0 +1,62 @@
+My name is Xinyu Cheng, I'm a software developer in National Instruments. I'm working on the LabVIEW team to build a graphical programming IDE. I'm working on building a tool to convert old version LabVIEW code to the latest version.
+
+So, the most chanlleging project that I did since I join the team is creating an API mapping system for Conversion tool. The problem we have that time is we reconvert all the library APIs every single time. This creates duplicate files and also requires redundant work. To solve that problem, I created a robust API mapping system to map the APIs from old version to the new version instead of reconverting the APIs every time. 
+
+Why Google?
+Google is the most innovative company in my opinion. Google creates all the cool stuff that would probably only exist in movies if without google. And you cannot even imagine how people's life would be if we don't have the google search engine. I would love to be a part of this company so that I could do something that really improves people's daily life.
+
+
+Why AWS?
+For me, AWS is a place that provides possiblity for people all over the world to enjoy the revolution of web servies. AWS makes it much easier for people to build their own website, for company to build their own business. And I would like to be a part of the team, to make differences, to make other people's life even easier. Also, I know that the AWS is still growing in a fast pace and has a bunch of chanlleging problems to solve. I would like to take the chanlleging and grow with the team.
+
+Why Uber?
+For me, Uber is an innovative and fast growing company. The business model of Uber is definitely a revolution of this century. It not only makes people's daily commute much more convenient, but also creates a huge amount of job opportunities for the whole world. I would like to be a part of the company and make differences to people's daily life. Besides, uber is also targeting the huge Chinese market, which gives me another good reason to pursue the opprotunity in uber. Because I would love to see China, my hometown to be involve in this revolution, and it would be even great if I could be a part of it.
+
+Why you?
+I love learning new things and taking challenging tasks. My two years' industry experience, although not too long, proves that I am able to solve difficult problems and rapidly acquire new technologies. My fast learning ability can help me to become a key contributor in an engineering team in a short amount of time. 
+
+
+Apps in cloud, backend, 
+Smart engineer, work, couch, work environment, 
+
+
+
+Venture projets:
+1. The school security identification application is used to identify whether a school visitor is a sex offender or person in some bad list. The system uses a bar-code scanner to scan visitors' drivers' license and query the sex offender database to determine whether he/she is on the list, and then determine whether we allow this person to enter the school. 
+
+A. scan barcode -> get person info.
+B. query sex offender database -> to determine whether to allow entry.
+C. write internal database -> store the visitors' info to internal database. The system could maintain the data of recent visitors.
+
+2. This tool is to read data type and address info from an embedded system. It basically try to find the data in the memory and then stores it into a dictionary.
+
+Rose course projects:
+1. Six degrees:
+This is a course project that I did. This application provides functions like create account, update profile, add friend, search friend. The users are connected in a graph, and the search function can show the distance between you and the person you are searching. It is built in Java, the user info are stored in xml.
+
+2. Kinect game : snake
+Building in QT, running in a beagle board and controlled by kinect. 
+
+- Board
+
+- Food
+  - 
+
+- Snake 
+  - Create()
+  - Eat()
+  - Die()
+
+
+Dian Group Projects:
+1. 3D measurements:
+   This is an engineering project that we did for a research team for 3D print, we setup a highspeed camera and write some APIs for the research team to control the camera in their desired way.
+
+2. Smart CAR:
+   We build a smart CAR that can read input from IR sensor and light source sensor, and control the car to run according to the correct directions.
+
+3. Laser Ranging:
+   This is a laser ranging system that used in a shipping terminal, the sensor send out lasers and collects the length of the laser before hitting the container. We calculate if the container have arrived at the correct spot based on the data collected. 
+
+4. Android App:
+   For mobile plan recommendation, allow user to input mobile plan, and allow user to enter their montly requirements for phone call, messages and data. Then recommend the top three cheapeset mobile plan.
