@@ -619,3 +619,372 @@ public class Solution {
         matrix[i][j] -= matrix[j][i];
     }
 }
+
+
+/*
+Count the primes before n.
+*/
+public class Solution {
+    public int countPrimes(int n) {
+        if(n < 2) return 0;
+        boolean[] isPrime = new boolean[n];
+        Arrays.fill(isPrime, true);
+        isPrime[1] = false;
+        for(int i = 2; i*i < n; i++){
+            for(int j = i*2; j < n; j += i){
+                isPrime[j] = false;
+            }
+        }
+        int count = 0;
+        for(int i = 2; i < n; i++){
+            if(isPrime[i]) count++;
+        }
+        return count;
+    }
+}
+
+/*
+number of islands
+*/
+public class Solution {
+    public int numIslands(char[][] grid) {
+        if(grid == null || grid.length == 0) return 0;
+        int count = 0;
+        for(int i = 0; i < grid.length; i++){
+            for(int j = 0; j < grid[0].length; j++){
+                if(grid[i][j] == '1'){
+                    count++;
+                    markIsland(grid, i, j);
+                }
+            }
+        }
+        return count;
+    }
+
+    public void markIsland(char[][] grid, int i, int j){
+        if(i < 0 || i >= grid.length || j < 0 || j >= grid[0].length || grid[i][j] == '0') return;
+        grid[i][j] = '0';
+        markIsland(grid, i-1, j);
+        markIsland(grid, i, j-1);
+        markIsland(grid, i+1, j);
+        markIsland(grid, i, j+1);
+    }
+}
+
+
+/*
+The gray code is a binary numeral system where two successive values differ in only one bit.
+
+Given a non-negative integer n representing the total number of bits in the code, print the sequence of gray code. A gray code sequence must begin with 0.
+
+For example, given n = 2, return [0,1,3,2]. Its gray code sequence is:
+
+00 - 0
+01 - 1
+11 - 3
+10 - 2
+Note:
+For a given n, a gray code sequence is not uniquely defined.
+
+For example, [0,2,3,1] is also a valid gray code sequence according to the above definition.
+
+For now, the judge is able to judge based on one instance of gray code sequence. Sorry about that.
+*/
+public class Solution {
+    // Using fomular gray(n) = n ^ (n>>1);
+    public List<Integer> grayCode(int n) {
+        List<Integer> res = new ArrayList();
+        for(int i = 0; i < 1<<n; i++){
+            res.add(i^(i>>1));
+        }
+        return res;
+    }
+
+    // General approach. Add one bit per level. Flip by layer.
+    public List<Integer> grayCode(int n) {
+        List<Integer> res = new ArrayList();
+        res.add(0);
+        if(n == 0) return res;
+        res.add(1);
+        // 0 1 -> 0 1 3 2 -> 000 001 011 010 110 111 101 100 ->
+        for(int i = 2; i < (1 << n); i <<= 1){
+            for(int j = i-1; j>=0; j--){
+                res.add(i+res.get(j));
+            }
+        }
+        return res;
+    }
+}
+
+/*
+Given a string S, find the longest palindromic substring in S. 
+You may assume that the maximum length of S is 1000, 
+and there exists one unique longest palindromic substring.
+*/
+// DP is not a solution for this problem, because their is no easy transform function.
+public class Solution {
+    public String res = "";
+    public String longestPalindrome(String s) {
+        if(s == null || s.length() < 2) return s;
+        for(int i = 0; i < s.length(); i++){
+            extendPalindrome(s, i, i);
+            if(i < s.length()-1 && s.charAt(i) == s.charAt(i+1)) extendPalindrome(s, i, i+1);
+        }
+        return res;
+    }
+    // "acba"
+    public void extendPalindrome(String s, int left, int right){
+        while(left >= 0 && right < s.length()){
+            if(s.charAt(left) != s.charAt(right)) break;
+            left--;
+            right++;
+        }
+        res = res.length() < right-left-1 ? s.substring(left+1, right) : res;
+    }
+}
+
+
+/*
+String to Integer (atoi) My Submissions Question Solution 
+Total Accepted: 71914 Total Submissions: 555831 Difficulty: Easy
+Implement atoi to convert a string to an integer.
+
+Hint: Carefully consider all possible input cases. 
+If you want a challenge, please do not see below and ask yourself what are the possible input cases.
+
+Notes: It is intended for this problem to be specified vaguely (ie, no given input specs). 
+You are responsible to gather all the input requirements up front.
+
+spoilers alert... click to show requirements for atoi.
+
+Requirements for atoi:
+The function first discards as many whitespace characters as necessary 
+until the first non-whitespace character is found. Then, starting from this character, 
+takes an optional initial plus or minus sign followed by as many numerical digits as possible, 
+and interprets them as a numerical value.
+
+The string can contain additional characters after those that form the integral number, which are ignored and have no effect on the behavior of this function.
+
+If the first sequence of non-whitespace characters in str is not a valid integral number, or if no such sequence exists because either str is empty or it contains only whitespace characters, no conversion is performed.
+
+If no valid conversion could be performed, a zero value is returned. If the correct value is out of the range of representable values, INT_MAX (2147483647) or INT_MIN (-2147483648) is returned.
+*/
+public class Solution {
+    public int myAtoi(String str) {
+        if(str == null || str.length() == 0) return 0;
+        int sign = 1;
+        int index = 0;
+        while(str.charAt(index) == ' '){
+            index++;
+            if(index == str.length()) return 0;
+        }
+        if(str.charAt(index) == '-' || str.charAt(index) == '+'){
+            sign = str.charAt(index) == '-' ? -1 : 1;
+            index++;
+        }
+        int num = 0, start = index;
+        while(index < str.length()){
+            int c = str.charAt(index) - '0';
+            if(c < 0 || c > 9) return num*sign;
+            if(num == 214748364){
+                if(sign == -1 && c > 8) return -2147483648;
+                if(sign == 1 && c > 7) return 2147483647;
+            }
+            if(num > 214748364) return sign == -1 ? -2147483648 : 2147483647;
+            num = num*10 + c;
+            index++;
+        }
+        return num*sign;
+    }
+}
+
+/*
+Merge K lists
+Divide and Conquer O(k*nlog(n))
+PriorityQueue O(nk*long(n*k));
+*/
+public class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+        if(lists == null || lists.length == 0) return null;
+        return mergeListNodes(lists, 0, lists.length-1);
+    }
+
+    public ListNode mergeListNodes(ListNode[] lists, int left, int right){
+        if(left == right) return lists[left];
+        int mid = left+right >> 1;
+        ListNode leftNode = mergeListNodes(lists, left, mid);
+        ListNode rightNode = mergeListNodes(lists, mid+1, right);
+        return mergeTwoLists(leftNode, rightNode);
+    }
+
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        if(l1 == null) return l2;
+        if(l2 == null) return l1;
+        
+        ListNode dummy = new ListNode(0);
+        ListNode cur = dummy;
+        
+        while(l1 != null && l2 != null){
+            if(l1.val < l2.val){
+                cur.next = l1;
+                l1 = l1.next;
+            }
+            else{
+                cur.next = l2;
+                l2 = l2.next;
+            }
+            cur = cur.next;
+        }
+        
+        if (l1 != null) cur.next = l1;
+        if (l2 != null) cur.next = l2;
+        
+        return dummy.next;
+    }
+}
+
+/*
+Min Stack My Submissions Question Solution 
+Total Accepted: 48880 Total Submissions: 239070 Difficulty: Easy
+Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+
+push(x) -- Push element x onto stack.
+pop() -- Removes the element on top of the stack.
+top() -- Get the top element.
+getMin() -- Retrieve the minimum element in the stack.
+*/
+
+class MinStack {
+    Stack<Integer> stack = new Stack();
+    Stack<Integer> minStack = new Stack();
+    public void push(int x) {
+        stack.push(x);
+        if(minStack.isEmpty() || minStack.peek() >= x) minStack.push(x);
+    }
+
+    public void pop() {
+        int top = stack.pop();
+        if(top == minStack.peek()) minStack.pop();
+    }
+
+    public int top() {
+        return stack.peek();
+    }
+
+    public int getMin() {
+        return minStack.peek();
+    }
+}
+
+
+
+// LRU LinkedHashMap
+import java.util.LinkedHashMap;
+
+public class LRUCache {
+    private LinkedHashMap<Integer, Integer> cache;
+    private int cacheCapcity;
+    public LRUCache(int capacity) {
+        cacheCapcity = capacity;
+        cache = new LinkedHashMap<Integer, Integer>(16, 0.75f, true){
+            protected boolean removeEldestEntry(Map.Entry eldest){
+                return size() > cacheCapcity;
+            }
+        };
+    }
+    
+    public int get(int key) {
+        if(!cache.containsKey(key)) return -1;
+        return cache.get(key);
+    }
+    
+    public void set(int key, int value) {
+        cache.put(key, value);
+    }
+}
+
+// LRU HashMap & DoubleLinkedList
+public class LRUCache {
+    class DNode{
+        public int key;
+        public int val;
+        public DNode pre;
+        public DNode next;
+    }
+
+    private int cacheCapcity;
+    private int cacheCount;
+    private HashMap<Integer, DNode> cache = new HashMap<Integer, DNode>();
+    private DNode head;
+    private DNode tail;
+
+    public LRUCache(int capacity) {
+        cacheCapcity = capacity;
+        head = new DNode();
+        head.pre = null;
+        tail = new DNode();
+        tail.next = null;
+
+        head.next = tail;
+        tail.pre = head;
+    }
+
+    // Remove a node;
+    public void removeNode(DNode node){
+        DNode preNode = node.pre;
+        DNode nextNode = node.next;
+        preNode.next = nextNode;
+        nextNode.pre = preNode;
+    }
+
+    // Add node to the front;
+    public void addNode(DNode node){
+        node.next = head.next;
+        node.pre = head;
+
+        head.next.pre = node;
+        head.next = node;
+    }
+
+    // Move a node to the front.
+    public void moveToHead(DNode node){
+        removeNode(node);
+        addNode(node);
+    }
+
+    // Poll the last node.
+    public DNode pollTailNode(){
+        DNode end = tail.pre;
+        removeNode(end);
+        return end;
+    }
+
+    public int get(int key) {
+        DNode node = cache.get(key);
+        if(node == null) return -1;
+        moveToHead(node);
+        return node.val;
+    }
+    
+    public void set(int key, int value) {
+        DNode node = cache.get(key);
+        if(node != null){
+            node.val = value;
+            moveToHead(node);
+        }
+        else{
+            node = new DNode();
+            node.key = key;
+            node.val = value;
+            addNode(node);
+            cache.put(key, node);
+            cacheCount++;
+
+            if(cacheCount > cacheCapcity){
+                DNode end = pollTailNode();
+                cache.remove(end.key);
+                cacheCount--;
+            }
+        }
+    }
+}
