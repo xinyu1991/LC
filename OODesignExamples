@@ -1,0 +1,106 @@
+Elevator Design:
+
+public enum Status{
+	Standing,
+	Up,
+	Down,
+	Maintainence
+}
+
+public class Elevator{
+	int elevatorId;
+	int curFloor;
+	Status status;
+	ControlPanel controlPanel;
+	List<Integer> destFloors {get; set;};
+
+	public Elevator(){
+	    // Initialize the elevator;
+	}
+
+	public int moveElevator(){
+
+	}
+
+
+
+}
+
+public class ElevatorDispatcher{
+	List<Elevator> elevators;
+
+
+	public ElevatorDispatcher(){
+
+	}
+
+	public boolean registerElevator(){
+
+	}
+
+
+}
+
+public class ControlPanel{
+	
+	OnPressed(){
+
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Vending Machine:
+
+
+
+
+ParkingLot:
+
+
+public class ParkingLot{
+	List<ParkingSpace> spaces;
+	List<ParkingSpace> vacantSpaces;
+	ParkingLotSign sign;
+
+}
+
+public class ParkingLotSign{
+	public static void displaySpaceLeft(int spaceCount);
+}
+
+public class ParkingSpace{
+	int id;
+	int distance;
+	boolean occupied;
+
+
+}
+
+public class Vehicle{
+	int id;
+	ParkingSpace parkedSpace;
+	DateTime startTime;
+	DateTime endTime;
+
+
+	public boolean park(ParkingSpace){
+
+	}
+
+	public boolean unPark(){
+
+	}
+}

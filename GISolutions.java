@@ -295,3 +295,444 @@ public class Solution {
     	}
     }
 }
+
+/*
+Meeting Rooms 
+Given an array of meeting time intervals consisting of start and end times [[s1,e1],[s2,e2],...] (si < ei), determine if a person could attend all meetings.
+
+For example,
+Given [[0, 30],[5, 10],[15, 20]],
+return false.
+
+*/
+/**
+ * Definition for an interval.
+ * public class Interval {
+ *     int start;
+ *     int end;
+ *     Interval() { start = 0; end = 0; }
+ *     Interval(int s, int e) { start = s; end = e; }
+ * }
+ */
+public class Solution {
+    public boolean canAttendMeetings(Interval[] intervals) {
+        if(intervals == null || intervals.length < 2) return true;
+        Arrays.sort(intervals, new Comparator<Interval>(){
+            @Override
+            public int compare(Interval i1, Interval i2){
+                return i1.start - i2.start;
+            }
+        });
+
+        Interval pre = intervals[0];
+        for(int i = 1; i < intervals.length; i++){
+            if(pre.end > intervals[i].start) return false;
+            pre = intervals[i];
+        }
+        return true;
+    }
+}
+
+
+/* Meeting Rooms II 
+Given an array of meeting time intervals consisting of start and end times [[s1,e1],[s2,e2],...] (si < ei), find the minimum number of conference rooms required.
+
+For example,
+Given [[0, 30],[5, 10],[15, 20]],
+return 2.
+*/
+
+public class Solution {
+    public int minMeetingRooms(Interval[] intervals) {
+        if(intervals == null || intervals.length == 0) return 0;
+        if(intervals.length == 1) return 1;
+        Arrays.sort(intervals, new Comparator<Interval>(){
+            @Override
+            public int compare(Interval i1, Interval i2){
+                return i1.start - i2.start;
+            }
+        });
+        // A priority queue of the end time of meetings.
+        PriorityQueue<Integer> queue = new PriorityQueue();
+
+        for(Interval interval : intervals){
+            if(!queue.isEmpty() && queue.peek() <= interval.start) queue.poll();
+            queue.offer(interval.end);
+        }
+
+        return queue.size();
+    }
+}
+
+/*
+Missing Ranges 
+Given a sorted integer array where the range of elements are [lower, upper] inclusive, return its missing ranges.
+
+For example, given [0, 1, 3, 50, 75], lower = 0 and upper = 99, return ["2", "4->49", "51->74", "76->99"].
+*/
+
+public class Solution {
+    public List<String> findMissingRanges(int[] nums, int lower, int upper) {
+        List<String> res  = new ArrayList();
+        if(nums == null || nums.length == 0) res.add(createRangeString(lower, upper));
+        for(int i = 0; i < nums.length; i++){
+            if(i == 0 && nums[i] != lower) res.add(createRangeString(lower, nums[i]-1));
+            if(i != 0 && nums[i] != nums[i-1] + 1) res.add(createRangeString(nums[i-1]+1, nums[i]-1));
+            if(i == nums.length - 1 && nums[i] != upper) res.add(createRangeString(nums[i]+1, upper));
+        }
+
+        return res;
+    }
+
+    public String createRangeString(int start, int end){
+        if(start == end) return String.valueOf(start);
+        return start + "->" + end;
+    }
+}
+
+/*
+Encode and Decode Strings 
+Design an algorithm to encode a list of strings to a string. The encoded string is then sent over the network and is decoded back to the original list of strings.
+
+Machine 1 (sender) has the function:
+
+string encode(vector<string> strs) {
+  // ... your code
+  return encoded_string;
+}
+Machine 2 (receiver) has the function:
+vector<string> decode(string s) {
+  //... your code
+  return strs;
+}
+So Machine 1 does:
+
+string encoded_string = encode(strs);
+and Machine 2 does:
+
+vector<string> strs2 = decode(encoded_string);
+strs2 in Machine 2 should be the same as strs in Machine 1.
+
+Implement the encode and decode methods.
+
+Note:
+The string may contain any possible characters out of 256 valid ascii characters. Your algorithm should be generalized enough to work on any possible characters.
+Do not use class member/global/static variables to store states. Your encode and decode algorithms should be stateless.
+Do not rely on any library method such as eval or serialize methods. You should implement your own encode/decode algorithm.
+*/
+
+public class Codec {
+
+    // Encodes a list of strings to a single string.
+    public String encode(List<String> strs) {
+        StringBuilder encode = new StringBuilder();
+        if(strs == null || strs.size() == 0) return encode.toString();
+        encode.append(strs.size() + "_");
+        for(String str : strs) encode.append(str.length() + "_");
+        for(String str : strs) encode.append(str);
+        return encode.toString();
+    }
+
+    // Decodes a single string to a list of strings.
+    public List<String> decode(String s) {
+        List<String> res = new ArrayList();
+        if(s == null || s.length() == 0) return res;
+        String[] lens = s.split("_");
+        int size = Integer.valueOf(lens[0]);
+        int[] stringLens = new int[size];
+        int startIndex = 0;
+
+        for(int i = 0; i < size; i++) stringLens[i] = Integer.valueOf(lens[i+1]);
+        for(int i = 0; i <= size; i++) startIndex += lens[i].length()+1;
+
+        for(int i = 0; i < size; i++){
+            if(stringLens[i] == 0) res.add("");
+            else res.add(s.substring(startIndex, startIndex+stringLens[i]));
+            startIndex += stringLens[i];
+        }
+        return res;
+    }
+}
+// Your Codec object will be instantiated and called as such:
+// Codec codec = new Codec();
+// codec.decode(codec.encode(strs));
+
+
+
+/*
+Flatten 2D Vector My Submissions Question Solution 
+Total Accepted: 2529 Total Submissions: 8783 Difficulty: Medium
+Implement an iterator to flatten a 2d vector.
+
+For example,
+Given 2d vector =
+
+[
+  [1,2],
+  [3],
+  [4,5,6]
+]
+By calling next repeatedly until hasNext returns false, the order of elements returned by next should be: [1,2,3,4,5,6].
+
+Hint:
+
+How many variables do you need to keep track?
+Two variables is all you need. Try with x and y.
+Beware of empty rows. It could be the first few rows.
+To write correct code, think about the invariant to maintain. What is it?
+The invariant is x and y must always point to a valid point in the 2d vector. Should you maintain your invariant ahead of time or right when you need it?
+Not sure? Think about how you would implement hasNext(). Which is more complex?
+Common logic in two different places should be refactored into a common method.
+Follow up:
+As an added challenge, try to code it using only iterators in C++ or iterators in Java.
+*/
+public class Vector2D {
+    int listIndex;
+    int elementIndex;
+    List<List<Integer>> list;
+    public Vector2D(List<List<Integer>> vec2d) {
+        list = vec2d;
+    }
+
+    public int next() {
+        while(list.get(listIndex).isEmpty()) listIndex++;
+        int val = list.get(listIndex).get(elementIndex);
+        if(elementIndex < list.get(listIndex).size() - 1) elementIndex++;
+        else{
+            listIndex++;
+            elementIndex = 0;
+        }
+        return val;
+    }
+
+    public boolean hasNext() {
+        if(listIndex < list.size() && elementIndex < list.get(listIndex).size()) return true;
+        for(int i = listIndex+1; i < list.size(); i++){
+            if(list.get(i).size() > 0) return true;
+        }
+        return false;
+    }
+}
+
+// Using Iterator.
+public class Vector2D {
+    Iterator<List<Integer>> listIter;
+    Iterator<Integer> intIter;
+    public Vector2D(List<List<Integer>> vec2d) {
+        listIter = vec2d.iterator();
+    }
+
+    public int next() {
+        return intIter.next();
+    }
+
+    public boolean hasNext() {
+        while((intIter == null || !intIter.hasNext()) && listIter.hasNext()) intIter = listIter.next().iterator();
+        return intIter != null && intIter.hasNext();
+    }
+}
+
+/**
+ * Your Vector2D object will be instantiated and called as such:
+ * Vector2D i = new Vector2D(vec2d);
+ * while (i.hasNext()) v[f()] = i.next();
+ */
+
+
+/*
+LRU Cache My Submissions Question Solution 
+Total Accepted: 52484 Total Submissions: 340216 Difficulty: Hard
+Design and implement a data structure for Least Recently Used (LRU) cache. It should support the following operations: get and set.
+
+get(key) - Get the value (will always be positive) of the key if the key exists in the cache, otherwise return -1.
+set(key, value) - Set or insert the value if the key is not already present. When the cache reached its capacity, it should invalidate the least recently used item before inserting a new item.
+*/
+
+// Using LinkedHashMap
+public class LRUCache {
+    Map<Integer, Integer> map;
+    public LRUCache(int capacity) {
+        // 16 is the initial capacity.
+        // 0.75 is the load factor, indicates when to double the size.
+        // true : order by access. false: order by insertion.
+        map = new LinkedHashMap(16, 0.75f, true){
+            protected boolean removeEldestEntry(Map.Entry eldest){
+                return size() > capacity;
+            }
+        };
+    }
+    
+    public int get(int key) {
+        if(!map.containsKey(key)) return -1;
+        return map.get(key);
+    }
+    
+    public void set(int key, int value) {
+        map.put(key, value);
+    }
+}
+
+// Using HashMap and DoubleLinkedList
+public class LRUCache {
+    int capacity, count;
+    HashMap<Integer, Node> map = new HashMap<Integer, Node>();
+    // head is the placeholder node in the front of the list.
+    // tail is the placeholder node in the end of the list.
+    Node head, tail;
+
+    public LRUCache(int cacheCapacity) {
+        count = 0;
+        capacity = cacheCapacity;
+        
+        head = new Node();
+        head.pre = null;
+        
+        tail = new Node();
+        tail.next = null;
+
+        head.next = tail;
+        tail.pre = head;
+    }
+        
+    public int get(int key) {
+        if(!map.containsKey(key)) return -1;
+        Node node = map.get(key);
+        moveToHead(node);
+        return node.val;
+    }
+    
+    public void set(int key, int value) {
+        if(map.containsKey(key)){
+            Node node = map.get(key);
+            node.val = value;
+            moveToHead(node);
+        }
+        else {
+            Node node = new Node(key, value);
+            map.put(key, node);
+            addNode(node);
+            count++;
+            if(count > capacity){
+                Node tail = removeTail();
+                map.remove(tail.key);
+                count--;
+            }
+        }
+    }
+    
+    private Node removeTail(){
+        Node res = tail.pre;
+        removeNode(res);
+        return res;
+    }
+
+    private void moveToHead(Node node){
+        removeNode(node);
+        addNode(node);
+    }
+
+    private void addNode(Node node){
+        node.pre = head;
+        node.next = head.next;
+
+        head.next.pre = node;
+        head.next = node;
+    }
+
+    private void removeNode(Node node){
+        Node preNode = node.pre;
+        Node nextNode = node.next;
+
+        preNode.next = nextNode;
+        nextNode.pre = preNode;
+    }
+
+    private class Node{
+        int key;
+        int val;
+        Node pre;
+        Node next;
+
+        public Node(){
+
+        }
+
+        public Node(int key, int val){
+            this.key = key;
+            this.val = val;
+        }
+    }
+}
+
+
+/*
+Closest Binary Search Tree Value 
+
+Given a non-empty binary search tree and a target value, find the value in the BST that is closest to the target.
+
+Note:
+Given target value is a floating point.
+You are guaranteed to have only one unique value in the BST that is closest to the target.
+*/
+
+public class Solution {
+    public int closestValue(TreeNode root, double target) {
+        int res = root.val;
+        double dist = Math.abs(root.val - target);
+        TreeNode node = root;
+        while(node != null){
+            if((double)node.val == target) return node.val;
+            double curDis = Math.abs(node.val - target);
+            if(curDis <= dist){
+                dist = curDis;
+                res = node.val;
+            }
+            if((double)node.val < target){
+                node = node.right;
+            }
+            else node = node.left;
+        }
+        return res;
+    }
+}
+
+/*
+Closest Binary Search Tree Value II 
+
+Given a non-empty binary search tree and a target value, find k values in the BST that are closest to the target.
+
+Note:
+Given target value is a floating point.
+You may assume k is always valid, that is: k ≤ total nodes.
+You are guaranteed to have only one unique set of k values in the BST that are closest to the target.
+Follow up:
+Assume that the BST is balanced, could you solve it in less than O(n) runtime (where n = total nodes)?
+*/
+
+public class Solution {
+    // Inorder Traversal O(n).
+    public List<Integer> closestKValues(TreeNode root, double target, int k) {
+        Stack<TreeNode> stack = new Stack();
+        Queue<Integer> queue = new LinkedList();
+        addLeftChild(stack, root);
+
+        while(!stack.isEmpty()){
+            TreeNode top = stack.pop();
+            if(queue.size() < k) queue.offer(top.val);
+            else{
+                if(Math.abs(queue.peek()-target) <= Math.abs(top.val - target)) return new ArrayList(queue);
+                queue.poll();
+                queue.offer(top.val);
+            }
+            if(top.right != null) addLeftChild(stack, top.right);
+        }
+        return new ArrayList(queue);
+    }
+
+    private void addLeftChild(Stack<TreeNode> stack, TreeNode node){
+        while(node != null){
+            stack.push(node);
+            node = node.left;
+        }
+    }
+}
