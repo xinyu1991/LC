@@ -736,3 +736,157 @@ public class Solution {
         }
     }
 }
+
+/*
+Strobogrammatic Number My Submissions Question Solution 
+Total Accepted: 2736 Total Submissions: 8502 Difficulty: Easy
+A strobogrammatic number is a number that looks the same when rotated 180 degrees (looked at upside down).
+
+Write a function to determine if a number is strobogrammatic. The number is represented as a string.
+
+For example, the numbers "69", "88", and "818" are all strobogrammatic.
+*/
+
+public class Solution {
+    private static HashMap<Character, Character> map = new HashMap();
+    private static HashSet<Character> set = new HashSet();
+    private static void buildMap(){
+        map.put('0', '0');
+        map.put('1', '1');
+        map.put('6', '9');
+        map.put('8', '8');
+        map.put('9', '6');
+        set.add('0');
+        set.add('1');
+        set.add('8');
+    }
+    
+    public boolean isStrobogrammatic(String num) {
+        if(num == null) return false;
+        buildMap();
+        int left = 0, right = num.length()-1;
+        while(left < right){
+            char leftChar = num.charAt(left);
+            char rightChar = num.charAt(right);
+            if(!map.containsKey(leftChar) || map.get(leftChar) != rightChar) return false;
+            left++;
+            right--;
+        }
+        
+        return left == right ? set.contains(num.charAt(left)) : true;
+    }
+}
+
+/*
+Strobogrammatic Number II My Submissions Question Solution 
+Total Accepted: 2332 Total Submissions: 8506 Difficulty: Medium
+A strobogrammatic number is a number that looks the same when rotated 180 degrees (looked at upside down).
+
+Find all strobogrammatic numbers that are of length = n.
+
+For example,
+Given n = 2, return ["11","69","88","96"].
+
+Hint:
+
+Try to use recursion and notice that it should recurse with n - 2 instead of n - 1.
+*/
+public class Solution {
+    public List<String> findStrobogrammatic(int n){
+        List<String> res = new ArrayList();
+        findStrobogrammatic(res, "", "", n, n);
+        return res;
+    }
+
+    public void findStrobogrammatic(List<String> res, String left, String right, int k, int n) {
+        if(k == 0) {
+            res.add(left+right);
+            return;
+        }
+        if(k == 1) {
+            res.add(left + 0 + right);
+            res.add(left + 1 + right);
+            res.add(left + 8 + right);
+            return;
+        }
+
+        
+        if (k != n) findStrobogrammatic(res, left+0, 0+right, k-2, n);
+        
+        findStrobogrammatic(res, left+1, 1+right, k-2, n);
+        findStrobogrammatic(res, left+8, 8+right, k-2, n);
+        findStrobogrammatic(res, left+6, 9+right, k-2, n);
+        findStrobogrammatic(res, left+9, 6+right, k-2, n);
+    }
+}
+
+/*
+Binary Tree Longest Consecutive Sequence My Submissions Question Solution 
+Total Accepted: 8 Total Submissions: 26 Difficulty: Medium
+Given a binary tree, find the length of the longest consecutive sequence path.
+
+The path refers to any sequence of nodes from some starting node to any node in the tree along the parent-child connections. The longest consecutive path need to be from parent to child (cannot be the reverse).
+
+For example,
+   1
+    \
+     3
+    / \
+   2   4
+        \
+         5
+Longest consecutive sequence path is 3-4-5, so return 3.
+   2
+    \
+     3
+    / 
+   2    
+  / 
+ 1
+Longest consecutive sequence path is 2-3,not3-2-1, so return 2.
+*/
+
+public class Solution {
+    int max = 1;
+    public int longestConsecutive(TreeNode root) {
+        if(root == null) return 0;
+        longestRec(root);
+        return max;
+    }
+    
+    public int longestRec(TreeNode node){
+        if(node == null) return 0;
+        if(node.left == null && node.right == null) return 1;
+        int leftLength = longestRec(node.left);
+        int rightLength = longestRec(node.right);
+        
+        leftLength = node.left == null || node.left.val != node.val + 1 ? 1 : leftLength+1;
+        rightLength = node.right == null || node.right.val != node.val + 1 ? 1 : rightLength+1;
+        int cur = Math.max(leftLength, rightLength);
+        max = Math.max(max, cur);
+        return cur;
+    }
+}
+
+/*
+Graph Valid Tree My Submissions Question
+Total Accepted: 3312 Total Submissions: 12436 Difficulty: Medium
+Given n nodes labeled from 0 to n - 1 and a list of undirected edges (each edge is a pair of nodes), write a function to check whether these edges make up a valid tree.
+
+For example:
+
+Given n = 5 and edges = [[0, 1], [0, 2], [0, 3], [1, 4]], return true.
+
+Given n = 5 and edges = [[0, 1], [1, 2], [2, 3], [1, 3], [1, 4]], return false.
+
+Hint:
+
+Given n = 5 and edges = [[0, 1], [1, 2], [3, 4]], what should your return? Is this case a valid tree?
+According to the definition of tree on Wikipedia: “a tree is an undirected graph in which any two vertices are connected by exactly one path. In other words, any connected graph without simple cycles is a tree.”
+Note: you can assume that no duplicate edges will appear in edges. Since all edges are undirected, [0, 1] is the same as [1, 0] and thus will not appear together in edges.
+*/
+public class Solution {
+    public boolean validTree(int n, int[][] edges) {
+        
+    }
+}
