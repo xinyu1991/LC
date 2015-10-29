@@ -887,6 +887,227 @@ Note: you can assume that no duplicate edges will appear in edges. Since all edg
 */
 public class Solution {
     public boolean validTree(int n, int[][] edges) {
+        if(n != edges.length+1) return false;
+        if(edges.length == 0) return true;
+        HashMap<Integer, List<Integer>> adjList = new HashMap();
+        HashSet<Integer> visited = new HashSet();
+
+        for(int i = 0; i < edges.length; i++){
+            int[] edge = edges[i];
+            int v1 = edge[0], v2 = edge[1];
+            List<Integer> adjs1 = adjList.get(v1);
+            List<Integer> adjs2 = adjList.get(v2);
+            if(adjs1 == null) adjs1 = new ArrayList();
+            if(adjs2 == null) adjs2 = new ArrayList();
+            adjs1.add(v2);
+            adjs2.add(v1);
+            adjList.put(v1, adjs1);
+            adjList.put(v2, adjs2);
+        }
+
+        int root = edges[0][0];
+        if (dfs(root, root, adjList, visited) == false) return false;
+        return visited.size() == n;
+
+    }
+
+    public boolean dfs(int cur, int parent, HashMap<Integer, List<Integer>> map, HashSet<Integer> visited){
+        visited.add(cur);
+        for(int neighbor : map.get(cur)){
+            if(neighbor != parent){
+                if(visited.contains(neighbor)) return false;
+                visited.add(neighbor);
+                if(!dfs(neighbor, cur, map, visited)) return false;
+            }
+        }
+        return true;
+    }
+}
+
+/*
+Longest Substring with At Most Two Distinct Characters My Submissions Question
+Total Accepted: 5631 Total Submissions: 18131 Difficulty: Hard
+Given a string, find the length of the longest substring T that contains at most 2 distinct characters.
+
+For example, Given s = “eceba”,
+
+T is "ece" which its length is 3.
+*/
+
+public class Solution {
+    public int lengthOfLongestSubstringTwoDistinct(String s) {
+        
+    }
+}
+
+/*
+Find Median from Data Stream My Submissions Question
+Total Accepted: 3269 Total Submissions: 18250 Difficulty: Hard
+Median is the middle value in an ordered integer list. If the size of the list is even, there is no middle value. So the median is the mean of the two middle value.
+
+Examples: 
+[2,3,4] , the median is 3
+
+[2,3], the median is (2 + 3) / 2 = 2.5
+
+Design a data structure that supports the following two operations:
+
+void addNum(int num) - Add a integer number from the data stream to the data structure.
+double findMedian() - Return the median of all elements so far.
+For example:
+
+add(1)
+add(2)
+findMedian() -> 1.5
+add(3) 
+findMedian() -> 2
+*/
+
+// Your MedianFinder object will be instantiated and called as such:
+// MedianFinder mf = new MedianFinder();
+// mf.addNum(1);
+// mf.findMedian();
+class MedianFinder {
+    // A minQueue to store the bigger half.
+    PriorityQueue<Integer> minQueue = new PriorityQueue();
+    // A maxQueue to store the smaller half.
+    PriorityQueue<Integer> maxQueue = new PriorityQueue(11, new Comparator<Integer>(){
+           public int compare(Integer num1, Integer num2){
+               return num2-num1;
+           }
+        });
+    // Adds a number into the data structure.
+    public void addNum(int num) {
+        if(maxQueue.size()>minQueue.size()){
+            maxQueue.offer(num);
+            minQueue.offer(maxQueue.poll());
+        }
+        else if(!minQueue.isEmpty() && num > minQueue.peek()){
+            minQueue.offer(num);
+            maxQueue.offer(minQueue.poll());
+        }
+        else maxQueue.offer(num);
+    }
+
+    // Returns the median of current data stream
+    public double findMedian() {
+        return maxQueue.size() > minQueue.size()
+           ? maxQueue.peek()
+           : (maxQueue.peek()+minQueue.peek())/2.0;
+    }
+};
+
+/*
+Flip Game II My Submissions Question
+Total Accepted: 1579 Total Submissions: 4267 Difficulty: Medium
+You are playing the following Flip Game with your friend: Given a string that contains only these two characters: + and -, you and your friend take turns to flip two consecutive "++" into "--". The game ends when a person can no longer make a move and therefore the other person will be the winner.
+
+Write a function to determine if the starting player can guarantee a win.
+
+For example, given s = "++++", return true. The starting player can guarantee a win by flipping the middle "++" to become "+--+".
+
+Follow up:
+Derive your algorithm's runtime complexity.
+*/
+public class Solution {
+    public boolean canWin(String s) {
+        
+    }
+}
+
+/*
+Unique Word Abbreviation My Submissions Question
+Total Accepted: 1690 Total Submissions: 10417 Difficulty: Easy
+An abbreviation of a word follows the form <first letter><number><last letter>. Below are some examples of word abbreviations:
+
+a) it                      --> it    (no abbreviation)
+
+     1
+b) d|o|g                   --> d1g
+
+              1    1  1
+     1---5----0----5--8
+c) i|nternationalizatio|n  --> i18n
+
+              1
+     1---5----0
+d) l|ocalizatio|n          --> l10n
+Assume you have a dictionary and given a word, find whether its abbreviation is unique in the dictionary. A word's abbreviation is unique if no other word from the dictionary has the same abbreviation.
+
+Example: 
+Given dictionary = [ "deer", "door", "cake", "card" ]
+
+isUnique("dear") -> false
+isUnique("cart") -> true
+isUnique("cane") -> false
+isUnique("make") -> true
+*/
+
+// Your ValidWordAbbr object will be instantiated and called as such:
+// ValidWordAbbr vwa = new ValidWordAbbr(dictionary);
+// vwa.isUnique("Word");
+// vwa.isUnique("anotherWord");
+public class ValidWordAbbr {
+    HashMap<String, HashSet<String>> map = new HashMap();
+    public ValidWordAbbr(String[] dictionary) {
+        for(String str : dictionary){
+            String key = getKey(str);
+            HashSet<String> set = map.get(key);
+            if(set == null) set = new HashSet();
+            set.add(str);
+            map.put(key, set);
+        }
+    }
+
+    public boolean isUnique(String word) {
+        String key = getKey(word);
+        return !map.containsKey(key) || map.get(key).contains(word) && map.get(key).size()==1;
+    }
+    
+    public String getKey(String word){
+        int num = word.length() - 2;
+        return num > 0 ? word.charAt(0) + "" + num + "" + word.charAt(num+1) : word;
+    }
+}
+
+/*
+Zigzag Iterator My Submissions Question
+Total Accepted: 2249 Total Submissions: 6333 Difficulty: Medium
+Given two 1d vectors, implement an iterator to return their elements alternately.
+
+For example, given two 1d vectors:
+
+v1 = [1, 2]
+v2 = [3, 4, 5, 6]
+By calling next repeatedly until hasNext returns false, the order of elements returned by next should be: [1, 3, 2, 4, 5, 6].
+
+Follow up: What if you are given k 1d vectors? How well can your code be extended to such cases?
+
+Clarification for the follow up question - Update (2015-09-18):
+The "Zigzag" order is not clearly defined and is ambiguous for k > 2 cases. If "Zigzag" does not look right to you, replace "Zigzag" with "Cyclic". For example, given the following input:
+
+[1,2,3]
+[4,5,6,7]
+[8,9]
+It should return [1,4,8,2,5,9,3,6,7].
+*/
+
+/**
+ * Your ZigzagIterator object will be instantiated and called as such:
+ * ZigzagIterator i = new ZigzagIterator(v1, v2);
+ * while (i.hasNext()) v[f()] = i.next();
+ */
+ public class ZigzagIterator {
+
+    public ZigzagIterator(List<Integer> v1, List<Integer> v2) {
+        
+    }
+
+    public int next() {
+        
+    }
+
+    public boolean hasNext() {
         
     }
 }
