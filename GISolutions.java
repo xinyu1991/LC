@@ -936,7 +936,30 @@ T is "ece" which its length is 3.
 
 public class Solution {
     public int lengthOfLongestSubstringTwoDistinct(String s) {
-        
+        if(s == null) return 0;
+        if(s.length() <= 2) return s.length();
+        Queue<Character> queue = new LinkedList();
+        HashMap<Character, Integer> charIndex = new HashMap();
+        int max = 0;
+        int startIndex = 0;
+        for(int i = 0; i < s.length(); i++){
+            char cur = s.charAt(i);
+            if(i == s.length()-1 && (cur == queue.peek() || cur == s.charAt(i-1))) {
+                max = Math.max(i-startIndex+1, max);
+                break;
+            }
+            if(i != 0 && cur == s.charAt(i-1)) continue;
+            charIndex.put(cur, i);
+            queue.offer(cur);
+            if(queue.size() > 2){
+                char front = queue.poll();
+                if(front != cur){
+                    max = Math.max(i-startIndex, max);
+                    startIndex = map.get(queue.peek());
+                }
+            }
+        }
+        return max;
     }
 }
 
