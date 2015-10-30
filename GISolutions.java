@@ -1034,7 +1034,26 @@ Derive your algorithm's runtime complexity.
 */
 public class Solution {
     public boolean canWin(String s) {
-        
+        Map<String, Boolean> winMap = new HashMap<String, Boolean>();
+        return canWin(s.toCharArray(), winMap);
+    }
+
+    public boolean canWin(char[] s, Map<String, Boolean> winMap){
+        String str = String.valueOf(s);
+        if(winMap.containsKey(str)) return winMap.get(str);
+        for(int i = 0; i < s.length-1; i++){
+            if(s[i] == '+' && s[i+1] == '+'){
+                s[i] = '-'; s[i+1] = '-';
+                boolean win = !canWin(s, winMap);
+                s[i] = '+'; s[i+1] = '+';
+                if(win){
+                    winMap.put(str, true);
+                    return true;
+                } 
+            }
+        }
+        winMap.put(str, false);
+        return false;
     }
 }
 
@@ -1120,17 +1139,77 @@ It should return [1,4,8,2,5,9,3,6,7].
  * ZigzagIterator i = new ZigzagIterator(v1, v2);
  * while (i.hasNext()) v[f()] = i.next();
  */
- public class ZigzagIterator {
-
+public class ZigzagIterator {
+    Iterator iterator1, iterator2, curIterator;
     public ZigzagIterator(List<Integer> v1, List<Integer> v2) {
-        
+        iterator1 = v1.iterator();
+        iterator2 = v2.iterator();
+        curIterator = iterator1;
     }
 
     public int next() {
-        
+        int val = curIterator.next();
+        if(curIterator == iterator1 && iterator2.hasNext()) curIterator = iterator2;
+        else if(curIterator == iterator2 && iterator1.hasNext()) curIterator = iterator1;
+        return val;
     }
 
     public boolean hasNext() {
-        
+        return iterator1.hasNext() || iterator2.hasNext;
+    }
+}
+
+// SkyLine problem
+
+public class Solution {
+    public List<int[]> getSkyline(int[][] buildings) {
+        if(buildings == null || buildings.length == 0) return new ArrayList();
+        return getSkyline(buildings, 0, buildings.length-1);
+    }
+    
+    public LinkedList<int[]> getSkyline(int[][] buildings, int left, int right){
+        if(left == right) return getKeyPoint(buildings[left]);
+        int mid = left+right >> 1;
+        return mergeKeyPoints(getSkyline(buildings, left, mid), getSkyline(buildings, mid+1, right));
+    }
+    
+    public LinkedList<int[]> mergeKeyPoints(LinkedList<int[]> keys1, LinkedList<int[]> keys2){
+        LinkedList<int[]> res = new LinkedList();
+        int h1 = 0, h2 = 0;
+        while(keys1.size() > 0 && keys2.size() > 0){
+            int x1 = keys1.getFirst()[0], x2 = keys2.getFirst()[0];
+            int x = x1, h = 0;
+            if(x1 < x2){
+                h1 = keys1.getFirst()[1];
+                keys1.removeFirst();
+            }
+            else if(x1 > x2){
+                h2 = keys2.getFirst()[1];
+                x = x2;
+                keys2.removeFirst();
+            }
+            else{
+                h1 = keys1.getFirst()[1];
+                h2 = keys2.getFirst()[1];
+                keys1.removeFirst();
+                keys2.removeFirst();
+            }
+            h = Math.max(h1, h2);
+            if(res.size() == 0 || res.getLast()[1] != h){
+                res.add(new int[] {x, h});
+            }
+        }
+        res.addAll(keys1);
+        res.addAll(keys2);
+        return res;
+    }
+    
+    public LinkedList<int[]> getKeyPoint(int[] building){
+        LinkedList<int[]> keyPoints = new LinkedList();
+        int[] top = {building[0], building[2]};
+        int[] bottom = {building[1], 0};
+        keyPoints.add(top);
+        keyPoints.add(bottom);
+        return keyPoints;
     }
 }
