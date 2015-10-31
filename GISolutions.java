@@ -1213,3 +1213,452 @@ public class Solution {
         return keyPoints;
     }
 }
+
+/* 1
+Wildcard Matching My Submissions Question
+Total Accepted: 42287 Total Submissions: 265326 Difficulty: Hard
+Implement wildcard pattern matching with support for '?' and '*'.
+
+'?' Matches any single character.
+'*' Matches any sequence of characters (including the empty sequence).
+
+The matching should cover the entire input string (not partial).
+
+The function prototype should be:
+bool isMatch(const char *s, const char *p)
+
+Some examples:
+isMatch("aa","a") → false
+isMatch("aa","aa") → true
+isMatch("aaa","aa") → false
+isMatch("aa", "*") → true
+isMatch("aa", "a*") → true
+isMatch("ab", "?*") → true
+isMatch("aab", "c*a*b") → false
+*/
+
+public class Solution {
+    public boolean isMatch(String s, String p) {
+        
+    }
+}
+
+/* 2
+Regular Expression Matching My Submissions Question
+Total Accepted: 60134 Total Submissions: 287965 Difficulty: Hard
+Implement regular expression matching with support for '.' and '*'.
+
+'.' Matches any single character.
+'*' Matches zero or more of the preceding element.
+
+The matching should cover the entire input string (not partial).
+
+The function prototype should be:
+bool isMatch(const char *s, const char *p)
+
+Some examples:
+isMatch("aa","a") → false
+isMatch("aa","aa") → true
+isMatch("aaa","aa") → false
+isMatch("aa", "a*") → true
+isMatch("aa", ".*") → true
+isMatch("ab", ".*") → true
+isMatch("aab", "c*a*b") → true
+*/
+public class Solution {
+    public boolean isMatch(String s, String p) {
+        if(s.equals(p)) return true;
+        
+    }
+}
+
+/* 3
+Shortest Palindrome My Submissions Question
+Total Accepted: 11642 Total Submissions: 66797 Difficulty: Hard
+Given a string S, you are allowed to convert it to a palindrome by adding characters in front of it. Find and return the shortest palindrome you can find by performing this transformation.
+
+For example:
+
+Given "aacecaaa", return "aaacecaaa".
+
+Given "abcd", return "dcbabcd".
+*/
+public class Solution {
+    public String shortestPalindrome(String s) {
+    }
+}
+
+/*
+4
+Peeking Iterator My Submissions Question
+Total Accepted: 7457 Total Submissions: 24013 Difficulty: Medium
+Given an Iterator class interface with methods: next() and hasNext(), design and implement a PeekingIterator that support the peek() operation -- it essentially peek() at the element that will be returned by the next call to next().
+
+Here is an example. Assume that the iterator is initialized to the beginning of the list: [1, 2, 3].
+
+Call next() gets you 1, the first element in the list.
+
+Now you call peek() and it returns 2, the next element. Calling next() after that still return 2.
+
+You call next() the final time and it returns 3, the last element. Calling hasNext() after that should return false.
+
+Hint:
+
+Think of "looking ahead". You want to cache the next element.
+Is one variable sufficient? Why or why not?
+Test your design with call order of peek() before next() vs next() before peek().
+For a clean implementation, check out Google's guava library source code.
+Follow up: How would you extend your design to be generic and work with all types, not just integer?
+*/
+
+class PeekingIterator implements Iterator<Integer> {
+
+    public PeekingIterator(Iterator<Integer> iterator) {
+        // initialize any member here.
+        
+    }
+
+    // Returns the next element in the iteration without advancing the iterator.
+    public Integer peek() {
+        
+    }
+
+    // hasNext() and next() should behave the same as in the Iterator interface.
+    // Override them if needed.
+    @Override
+    public Integer next() {
+        
+    }
+
+    @Override
+    public boolean hasNext() {
+        
+    }
+}
+
+/* 5
+Median of Two Sorted Arrays My Submissions Question
+Total Accepted: 71218 Total Submissions: 409032 Difficulty: Hard
+There are two sorted arrays nums1 and nums2 of size m and n respectively. Find the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).
+*/
+public class Solution {
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        
+    }
+}
+
+
+/* 6
+Meeting Rooms II My Submissions Question
+Total Accepted: 2860 Total Submissions: 9708 Difficulty: Medium
+Given an array of meeting time intervals consisting of start and end times [[s1,e1],[s2,e2],...] (si < ei), find the minimum number of conference rooms required.
+
+For example,
+Given [[0, 30],[5, 10],[15, 20]],
+return 2.
+*/
+
+public class Solution {
+    public int minMeetingRooms(Interval[] intervals) {
+    }
+}
+
+/* 7
+Implement Trie (Prefix Tree) My Submissions Question
+Total Accepted: 19839 Total Submissions: 80042 Difficulty: Medium
+Implement a trie with insert, search, and startsWith methods.
+
+Note:
+You may assume that all inputs are consist of lowercase letters a-z.
+*/
+class TrieNode {
+    // Initialize your data structure here.
+    public TrieNode() {
+        
+    }
+}
+
+public class Trie {
+    private TrieNode root;
+
+    public Trie() {
+        root = new TrieNode();
+    }
+
+    // Inserts a word into the trie.
+    public void insert(String word) {
+        
+    }
+
+    // Returns if the word is in the trie.
+    public boolean search(String word) {
+        
+    }
+
+    // Returns if there is any word in the trie
+    // that starts with the given prefix.
+    public boolean startsWith(String prefix) {
+        
+    }
+}
+
+/* 8
+Graph Valid Tree My Submissions Question
+Total Accepted: 3450 Total Submissions: 12959 Difficulty: Medium
+Given n nodes labeled from 0 to n - 1 and a list of undirected edges (each edge is a pair of nodes), write a function to check whether these edges make up a valid tree.
+
+For example:
+
+Given n = 5 and edges = [[0, 1], [0, 2], [0, 3], [1, 4]], return true.
+
+Given n = 5 and edges = [[0, 1], [1, 2], [2, 3], [1, 3], [1, 4]], return false.
+
+Show Hint 
+Note: you can assume that no duplicate edges will appear in edges. Since all edges are undirected, [0, 1] is the same as [1, 0] and thus will not appear together in edges.
+*/
+public class Solution {
+    public boolean validTree(int n, int[][] edges) {
+
+    }
+}
+
+/* 9
+Generate  Parentheses My Submissions Question
+Total Accepted: 64720 Total Submissions: 191622 Difficulty: Medium
+Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+
+For example, given n = 3, a solution set is:
+
+"((()))", "(()())", "(())()", "()(())", "()()()"
+*/
+public class Solution {
+    public List<String> generateParenthesis(int n) {
+        
+    }
+}
+
+/* 10
+Game of Life
+*/
+public class Solution {
+    public void gameOfLife(int[][] board) {
+        
+    }
+}
+
+/* 11
+Expression Add Operators My Submissions Question
+Total Accepted: 3948 Total Submissions: 19894 Difficulty: Hard
+Given a string that contains only digits 0-9 and a target value, return all possibilities to add binary operators (not unary) +, -, or * between the digits so they evaluate to the target value.
+
+Examples: 
+"123", 6 -> ["1+2+3", "1*2*3"] 
+"232", 8 -> ["2*3+2", "2+3*2"]
+"105", 5 -> ["1*0+5","10-5"]
+"00", 0 -> ["0+0", "0-0", "0*0"]
+"3456237490", 9191 -> []
+*/
+public class Solution {
+    public List<String> addOperators(String num, int target) {
+        
+    }
+}
+
+/* 12
+Basic Calculator My Submissions Question
+Total Accepted: 15862 Total Submissions: 85286 Difficulty: Medium
+Implement a basic calculator to evaluate a simple expression string.
+
+The expression string may contain open ( and closing parentheses ), the plus + or minus sign -, non-negative integers and empty spaces .
+
+You may assume that the given expression is always valid.
+
+Some examples:
+"1 + 1" = 2
+" 2-1 + 2 " = 3
+"(1+(4+5+2)-3)+(6+8)" = 23
+*/
+public class Solution {
+    public int calculate(String s) {
+        
+    }
+}
+
+/* 13
+Binary Tree Longest Consecutive Sequence My Submissions Question
+Total Accepted: 709 Total Submissions: 2216 Difficulty: Medium
+Given a binary tree, find the length of the longest consecutive sequence path.
+
+The path refers to any sequence of nodes from some starting node to any node in the tree along the parent-child connections. The longest consecutive path need to be from parent to child (cannot be the reverse).
+
+For example,
+   1
+    \
+     3
+    / \
+   2   4
+        \
+         5
+Longest consecutive sequence path is 3-4-5, so return 3.
+   2
+    \
+     3
+    / 
+   2    
+  / 
+ 1
+Longest consecutive sequence path is 2-3,not3-2-1, so return 2.
+*/
+public class Solution {
+    public int longestConsecutive(TreeNode root) {
+        
+    }
+    
+    public void helper()
+}
+
+/* 14
+Binary Tree Paths My Submissions Question
+Total Accepted: 20033 Total Submissions: 86148 Difficulty: Easy
+Given a binary tree, return all root-to-leaf paths.
+
+For example, given the following binary tree:
+
+   1
+ /   \
+2     3
+ \
+  5
+All root-to-leaf paths are:
+
+["1->2->5", "1->3"]
+*/
+public class Solution {
+    public List<String> binaryTreePaths(TreeNode root) {
+        
+    }
+}
+
+/* 15
+Alien Dictionary My Submissions Question
+Total Accepted: 2136 Total Submissions: 11646 Difficulty: Hard
+There is a new alien language which uses the latin alphabet. However, the order among letters are unknown to you. You receive a list of words from the dictionary, where words are sorted lexicographically by the rules of this new language. Derive the order of letters in this language.
+
+For example,
+Given the following words in dictionary,
+
+[
+  "wrt",
+  "wrf",
+  "er",
+  "ett",
+  "rftt"
+]
+The correct order is: "wertf".
+
+Note:
+You may assume all letters are in lowercase.
+If the order is invalid, return an empty string.
+There may be multiple valid order of letters, return any one of them is fine.*/
+public class Solution {
+    public String alienOrder(String[] words) {
+        
+    }
+}
+
+/* 16
+Recover Binary Search Tree My Submissions Question
+Total Accepted: 42605 Total Submissions: 170468 Difficulty: Hard
+Two elements of a binary search tree (BST) are swapped by mistake.
+
+Recover the tree without changing its structure.
+
+Note:
+A solution using O(n) space is pretty straight forward. Could you devise a constant space solution?
+*/
+public class Solution {
+    public void recoverTree(TreeNode root) {
+        
+    }
+}
+
+/* 17
+Populating Next Right Pointers in Each Node II My Submissions Question
+Total Accepted: 48222 Total Submissions: 149755 Difficulty: Hard
+Follow up for problem "Populating Next Right Pointers in Each Node".
+
+What if the given tree could be any binary tree? Would your previous solution still work?
+
+Note:
+
+You may only use constant extra space.
+For example,
+Given the following binary tree,
+         1
+       /  \
+      2    3
+     / \    \
+    4   5    7
+After calling your function, the tree should look like:
+         1 -> NULL
+       /  \
+      2 -> 3 -> NULL
+     / \    \
+    4-> 5 -> 7 -> NULL
+*/
+
+public class Solution {
+    public void connect(TreeLinkNode root) {
+    }
+}
+
+/* 18
+Fraction to Recurring Decimal My Submissions Question
+Total Accepted: 21231 Total Submissions: 155226 Difficulty: Medium
+Given two integers representing the numerator and denominator of a fraction, return the fraction in string format.
+
+If the fractional part is repeating, enclose the repeating part in parentheses.
+
+For example,
+
+Given numerator = 1, denominator = 2, return "0.5".
+Given numerator = 2, denominator = 1, return "2".
+Given numerator = 2, denominator = 3, return "0.(6)".
+*/
+public class Solution {
+    public String fractionToDecimal(int numerator, int denominator) {
+        
+    }
+}
+
+// 19 Best Time to Buy and Sell Stock IV
+public class Solution {
+    public int maxProfit(int k, int[] prices) {
+        
+    }
+
+
+    private int quickSolve(int[] prices) {
+        int len = prices.length, profit = 0;
+        for (int i = 1; i < len; i++)
+            // as long as there is a price gap, we gain a profit.
+            if (prices[i] > prices[i - 1]) profit += prices[i] - prices[i - 1];
+        return profit;
+    }
+}
+
+/* 20
+Find the kth largest element in an unsorted array. Note that it is the kth largest element in the sorted order, not the kth distinct element.
+
+For example,
+Given [3,2,1,5,6,4] and k = 2, return 5.
+
+Note: 
+You may assume k is always valid, 1 ≤ k ≤ array's length.
+*/
+public class Solution {
+    public int findKthLargest(int[] nums, int k) {
+    }
+}
+
+// H-Index
