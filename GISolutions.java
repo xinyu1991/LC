@@ -1500,12 +1500,47 @@ class PeekingIterator implements Iterator<Integer> {
 /* 5
 Median of Two Sorted Arrays My Submissions Question
 Total Accepted: 71218 Total Submissions: 409032 Difficulty: Hard
-There are two sorted arrays nums1 and nums2 of size m and n respectively. Find the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).
+There are two sorted arrays nums1 and nums2 of size m and n respectively. 
+Find the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).
 */
 public class Solution {
-    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
-        
-    }
+    public double findMedianSortedArrays(int[] nums1, int[] nums2)
+        {
+            int len1 = nums1.length, len2 = nums2.length;
+            if (len1 > len2) return findMedianSortedArrays(nums2, nums1);
+            int halfLen = len1 + len2 + 1 >> 1;
+            int mid1 = -1, mid2 = -1;
+            int left = 0, right = len1;
+            int m1 = 0, m2 = 0;
+            while (left <= right)
+            {
+                m1 = left + right >> 1;
+                m2 = halfLen - m1;
+                if (m1 > 0 && m2 < len2 && nums1[m1 - 1] > nums2[m2]) right = m1;
+                else if (m2 > 0 && m1 < len1 && nums2[m2 - 1] > nums1[m1]) left = m1 + 1;
+                else
+                {
+                    if (m1 == 0)
+                    {
+                        mid1 = nums2[m2-1];
+                    }
+                    else if (m2 == 0)
+                    {
+                        mid1 = nums1[m1-1];
+                    }
+                    else
+                    {
+                        mid1 = Math.max(nums1[m1-1], nums2[m2-1]);
+                    }
+                    break;
+                }                
+            }
+            if ((len1 + len2) % 2 == 1) return mid1;
+            if (m1 == len1) mid2 = nums2[m2];
+            else if (m2 == len2) mid2 = nums1[m1];
+            else mid2 = Math.min(nums1[m1], nums2[m2]);
+            return (mid1 + mid2) / 2.0;
+        }
 }
 
 
@@ -1697,8 +1732,6 @@ public class Solution {
         List<String> res = new ArrayList();
 
     }
-
-
 }
 
 /* 12
@@ -1716,9 +1749,93 @@ Some examples:
 "(1+(4+5+2)-3)+(6+8)" = 23
 */
 public class Solution {
-    public int calculate(String s) {
-        
-    }
+    public int calculate(String s)
+        {
+            int res = 0, num = 0, sign = 1;
+            Stack<Integer> stack = new Stack<Integer>();
+            for (int i = 0; i < s.length(); i++)
+            {
+                char cur = s.charAt(i);
+                if (cur >= '0' && cur <= '9')
+                {
+                    num = num * 10 + (cur - '0');
+                }
+                else if (cur == '+' || cur == '-')
+                {
+                    res += sign * num;
+                    sign = cur == '-' ? -1 : 1;
+                    num = 0;
+                }
+                else if (cur == '(')
+                {
+                    stack.push(res);
+                    stack.push(sign);
+                    res = 0;
+                    sign = 1;
+                    num = 0;
+                }
+                else if (cur == ')')
+                {
+                    res += num * sign;
+                    res *= stack.pop();
+                    res += stack.pop();
+                    num = 0;
+                }
+            }
+            if(num != 0) res+=num*sign;
+            return res;
+        }
+}
+
+/*
+"3+2*2" = 7
+" 3/2 " = 1
+" 3+5 / 2 " = 5
+*/
+public class Solution {
+    public int calculate(String s)
+        {
+            Stack<Integer> stack = new Stack<Integer>();
+            int num = 0;
+            char sign = '+';
+            for(int i = 0; i < s.length(); i++)
+            {
+                char c = s.charAt(i);
+                if (c == ' ' && i != s.length()-1) continue;
+                if (Character.isDigit(c))
+                {
+                    num = 10 * num + c - '0';
+                }
+
+                if(!Character.isDigit(c) || i == s.length()-1)
+                {
+                    switch (sign)
+                    {
+                        case '+':
+                            stack.push(num);
+                            break;
+                        case '-':
+                            stack.push(0 - num);
+                            break;
+                        case '*':
+                            stack.push(stack.pop() * num);
+                            break;
+                        case '*':
+                            stack.push(stack.pop() / num);
+                            break;
+                    }
+                    sign = c;
+                    if(i != s.length()-1) num = 0;
+                }
+            }
+            int res = 0;
+            if(stack.isEmpty()) res+=num; 
+            while (!stack.isEmpty())
+            {
+                res += stack.pop();
+            }
+            return res;
+        }
 }
 
 /* 13
@@ -1938,17 +2055,54 @@ Given numerator = 2, denominator = 1, return "2".
 Given numerator = 2, denominator = 3, return "0.(6)".
 */
 public class Solution {
-    public String fractionToDecimal(int numerator, int denominator) {
-        
-    }
+    public String fractionToDecimal(int numerator, int denominator)
+            {
+                StringBuilder res = new StringBuilder();
+                if ((numerator < 0) ^ (denominator < 0) && numerator!=0) res.append('-');
+                long num = Math.abs((long)numerator);
+                long den = Math.abs((long)denominator);
+                res.append(num / den);
+                num = num % den;
+                if (num == 0)
+                {
+                    return res.toString();
+                }
+                res.append('.');
+                HashMap<Long, Integer> set = new HashMap<Long, Integer>();
+                while (num != 0)
+                {
+                    num = num * 10;
+                    if (set.containsKey(num))
+                    {
+                        int index = set.get(num);
+                        res.insert(index, '(');
+                        res.append(')');
+                        break;
+                    }
+                    set.put(num, res.length());
+                    res.append(num / den);
+                    num = num % den;
+                }
+                return res.toString();
+            }
 }
 
 // 19 Best Time to Buy and Sell Stock IV
+// 4
+// [1,2,4,2,5,7,2,4,9,0]
 public class Solution {
     public int maxProfit(int k, int[] prices) {
-        
+        if(k >= prices.length/2) return quickSolve(prices);
+        int[][] profit = new int[k+1][prices.length()];        
+        profit[0][0] = 0;
+        for(int i = 1; i < k+1; i++){
+            int maxBuy = 0-prices[0];
+            for(int j = 1; j < prices.length; j++){
+                profit[i][j] = Math.max(profit[i][j-1], maxBuy + prices[j]);
+                maxBuy = Math.max(maxBuy, profit[i-1][j-1] - prices[j]);                    
+            }
+        }
     }
-
 
     private int quickSolve(int[] prices) {
         int len = prices.length, profit = 0;

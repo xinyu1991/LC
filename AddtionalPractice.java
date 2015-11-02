@@ -82,7 +82,8 @@ public class Solution {
 }
 
 /* 7
-You are given a string, s, and a list of words, words, that are all of the same length. Find all starting indices of substring(s) in s that is a concatenation of each word in words exactly once and without any intervening characters.
+You are given a string, s, and a list of words, words, that are all of the same length. 
+Find all starting indices of substring(s) in s that is a concatenation of each word in words exactly once and without any intervening characters.
 
 For example, given:
 s: "barfoothefoobarman"
@@ -97,7 +98,8 @@ public class Solution {
 }
 
 /* 8
-Given a string containing just the characters '(' and ')', find the length of the longest valid (well-formed) parentheses substring.
+Given a string containing just the characters '(' and ')', find the length of the longest valid (well-formed) 
+parentheses substring.
 
 For "(()", the longest valid parentheses substring is "()", which has length = 2.
 
@@ -126,7 +128,8 @@ public class Solution {
 
 // 10 Search Insert
 /*
-Given a sorted array and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order.
+Given a sorted array and a target value, return the index if the target is found. 
+If not, return the index where it would be if it were inserted in order.
 
 You may assume no duplicates in the array.
 
@@ -247,11 +250,9 @@ Some examples:
 "abc" => false
 "1 a" => false
 "2e10" => true
-Note: It is intended for the problem statement to be ambiguous. You should gather all requirements up front before implementing one.
+Note: It is intended for the problem statement to be ambiguous. 
+You should gather all requirements up front before implementing one.
 
-Update (2015-02-10):
-The signature of the C++ function had been updated. If you still see your function signature accepts a const char * argument, please click the reload button  to reset your code definition.
-*/
 public class Solution {
     public boolean isNumber(String s) {
     }
