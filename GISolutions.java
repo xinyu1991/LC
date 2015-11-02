@@ -78,7 +78,8 @@ public int threeSumSmaller(int[] nums, int target){
 /*
 Alien Dictionary 
 Total Accepted: 1919 Total Submissions: 10633 Difficulty: Hard
-There is a new alien language which uses the latin alphabet. However, the order among letters are unknown to you. You receive a list of words from the dictionary, where words are sorted lexicographically by the rules of this new language. Derive the order of letters in this language.
+There is a new alien language which uses the latin alphabet. However, the order among letters are unknown to you. 
+You receive a list of words from the dictionary, where words are sorted lexicographically by the rules of this new language. Derive the order of letters in this language.
 
 For example,
 Given the following words in dictionary,
@@ -825,7 +826,8 @@ Binary Tree Longest Consecutive Sequence My Submissions Question Solution
 Total Accepted: 8 Total Submissions: 26 Difficulty: Medium
 Given a binary tree, find the length of the longest consecutive sequence path.
 
-The path refers to any sequence of nodes from some starting node to any node in the tree along the parent-child connections. The longest consecutive path need to be from parent to child (cannot be the reverse).
+The path refers to any sequence of nodes from some starting node to any node in the tree along the parent-child connections. 
+The longest consecutive path need to be from parent to child (cannot be the reverse).
 
 For example,
    1
@@ -882,7 +884,8 @@ Given n = 5 and edges = [[0, 1], [1, 2], [2, 3], [1, 3], [1, 4]], return false.
 Hint:
 
 Given n = 5 and edges = [[0, 1], [1, 2], [3, 4]], what should your return? Is this case a valid tree?
-According to the definition of tree on Wikipedia: “a tree is an undirected graph in which any two vertices are connected by exactly one path. In other words, any connected graph without simple cycles is a tree.”
+According to the definition of tree on Wikipedia: “a tree is an undirected graph in which any two vertices are connected by exactly one path. 
+In other words, any connected graph without simple cycles is a tree.”
 Note: you can assume that no duplicate edges will appear in edges. Since all edges are undirected, [0, 1] is the same as [1, 0] and thus will not appear together in edges.
 */
 public class Solution {
@@ -1023,7 +1026,8 @@ class MedianFinder {
 /*
 Flip Game II My Submissions Question
 Total Accepted: 1579 Total Submissions: 4267 Difficulty: Medium
-You are playing the following Flip Game with your friend: Given a string that contains only these two characters: + and -, you and your friend take turns to flip two consecutive "++" into "--". The game ends when a person can no longer make a move and therefore the other person will be the winner.
+You are playing the following Flip Game with your friend: Given a string that contains only these two characters: + and -, 
+you and your friend take turns to flip two consecutive "++" into "--". The game ends when a person can no longer make a move and therefore the other person will be the winner.
 
 Write a function to determine if the starting player can guarantee a win.
 
@@ -1239,7 +1243,51 @@ isMatch("aab", "c*a*b") → false
 
 public class Solution {
     public boolean isMatch(String s, String p) {
-        
+        if(s == null || p == null) return false;
+        boolean[] matched = new boolean[s.length()+1];
+        Arrays.fill(matched, false);
+        matched[0] = true;
+
+        for(int i = 0; i < p.length(); i++){
+            if(p.charAt(i) == '*'){
+                for(int j = 0; j < s.length(); j++){
+                    matched[j+1] = matched[j] || matched[j+1];
+                }
+            }
+            else{
+                for(int j = s.length()-1; j >= 0; j--){
+                    matched[j+1] = matched[j] && (p.charAt(i) == '?' || p.charAt(i) == s.charAt(j));
+                }
+                matched[0] = false;
+            }
+        }
+        return matched[s.length()];
+    }
+
+    public boolean isMatch(String s, String p) {
+        if(s.equals(p)) return true;
+        if(p.length() == 0) return false;
+        boolean[][] match = new boolean[p.length()+1][s.length()+1];
+        match[0][0] = true;
+        // The p[0..i] matches empty string if current char is '*' and p[0..i-1] matches empty string.
+        for(int i = 0; i < p.length(); i++){
+            match[i+1][0] = match[i][0] && p.charAt(i) == '*';
+        }
+
+        for(int i = 0; i < p.length(); i++){
+            for(int j = 0; j < s.length(); j++){
+                // If p[i] == '*', the p[0..i] matches s[0..j] if:
+                // 1. p[0..i] matches s[0..j-1]. because * matches sequence.
+                // 2. p[0..i-1] matches s[0..j]. where p[i] matches empty here.
+                if(p.charAt(i) == '*'){
+                    match[i+1][j+1] = match[i][j+1] || match[i+1][j];
+                }
+                else{
+                    match[i+1][j+1] = match[i][j] && (p.charAt(i)=='?' || p.charAt(i) == s.charAt(j));
+                }
+            }
+        }
+        return match[p.length()][s.length()];
     }
 }
 
@@ -1268,7 +1316,41 @@ isMatch("aab", "c*a*b") → true
 public class Solution {
     public boolean isMatch(String s, String p) {
         if(s.equals(p)) return true;
-        
+        if(p.length() == 0 || p.charAt(0) == '*') return false;
+        // macth[i][j] means p[0..i-1] matches s[0..j-1].
+        boolean[][] match = new boolean[p.length()+1][s.length()+1];
+        // Set the empty to empty matched.
+        match[0][0] = true;
+        // p[0..i] matches empty string if p[i] is '*' and p[0..i-2] matches empty string.
+        for(int i = 1; i < p.length(); i++){
+            match[i+1][0] = p.charAt(i) == '*' && match[i-1][0];
+        }
+
+        for(int i = 0; i < p.length(); i++){
+            char pChar = p.charAt(i);
+            for(int j = 0; j < s.length(); j++){
+                // If the current char is '*', p[0..i] matches with s[0..j] if:
+                // 1. p[0..i-2] matches s[0..j] (* reprensents 0 char);
+                // 2. p[0..i] matches s[0..j-1] and p[i-1] == s[j-1];  
+                if(pChar == '*') 
+                    match[i+1][j+1] = match[i-1][j+1] || ((p.charAt(i-1) == '.' || p.charAt(i-1) == s.charAt(j)) && match[i+1][j]);
+                // If the current char is not '*', p[0..i] matches with s[0..j] if:
+                // p[0..i-1] matches s[0..j-1] and p[i-1] == s[j-1];
+                else match[i+1][j+1] = match[i][j] && (pChar == '.' || pChar == s.charAt(j));
+            }
+        }
+        return match[p.length()][s.length()];
+    }
+
+    public boolean isMatch(String s, String p){
+        if(p.length() == 0) return s.length() == 0;
+        // If the second char is '*', try to see if s matches p[2..], otherwise if the first char matches, try to see if s[1..] matches p;
+        if(p.length() > 1 && p.charAt(1) == '*'){
+            return isMatch(s, p.substring(2)) || (s.length()!=0 && (p.charAt(0) == '.' || p.charAt(0) == s.charAt(0)) && isMatch(s.substring(1), p));
+        }
+        else{
+            return s.length() != 0 && (p.charAt(0) == '.' || p.charAt(0) == s.charAt(0)) && isMatch(s.substring(1), p.substring(1));
+        }
     }
 }
 
@@ -1276,8 +1358,8 @@ public class Solution {
 Shortest Palindrome My Submissions Question
 Total Accepted: 11642 Total Submissions: 66797 Difficulty: Hard
 Given a string S, you are allowed to convert it to a palindrome by adding characters in front of it. Find and return the shortest palindrome you can find by performing this transformation.
-
 For example:
+
 
 Given "aacecaaa", return "aaacecaaa".
 
@@ -1285,6 +1367,51 @@ Given "abcd", return "dcbabcd".
 */
 public class Solution {
     public String shortestPalindrome(String s) {
+        int left = 0, right = s.length-1, end = s.length-1;
+        while(left < right){
+            if(s.charAt(left) == s.charAt(right)){
+                left++;
+                right--;
+            }
+            else{
+                right = end--;
+                left = 0;
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(s.substring(end)).reverse();
+        return sb.append(s).toString();
+    }
+}
+
+// Using KMP.
+public class Solution {
+    public String shortestPalindrome(String s) {
+        if(s == null || s.length() < 2) return s;
+        String temp = s+"#"+ new StringBuilder(s).reverse().toString();
+        int length = buildTable(temp);
+        StringBuilder sb = new StringBuilder();
+        return sb.append(s.substring(length)).reverse().toString() + s;
+    }
+
+    public int buildTable(String s){
+        int[] table = new int[s.length()];
+        table[0] = 0;
+        for(int i = 0, j = 1; j < s.length(); j++){
+            if(s.charAt(i) == s.charAt(j)){
+                table[j] = table[j-1] + 1;
+                i++;
+            }
+            else{
+                i = table[j-1];
+                while(i > 0 && s.charAt(i) != s.charAt(j)){
+                    i = table[i-1];
+                }
+                
+                table[j] = s.charAt(i) == s.charAt(j) ? ++i : 0;
+            }
+        }
+        return table[s.length() - 1];
     }
 }
 
@@ -1292,7 +1419,8 @@ public class Solution {
 4
 Peeking Iterator My Submissions Question
 Total Accepted: 7457 Total Submissions: 24013 Difficulty: Medium
-Given an Iterator class interface with methods: next() and hasNext(), design and implement a PeekingIterator that support the peek() operation -- it essentially peek() at the element that will be returned by the next call to next().
+Given an Iterator class interface with methods: next() and hasNext(), design and implement a PeekingIterator that support the peek() operation 
+-- it essentially peek() at the element that will be returned by the next call to next().
 
 Here is an example. Assume that the iterator is initialized to the beginning of the list: [1, 2, 3].
 
@@ -1312,27 +1440,60 @@ Follow up: How would you extend your design to be generic and work with all type
 */
 
 class PeekingIterator implements Iterator<Integer> {
-
+    Queue<Integer> queue = new LinkedList();
     public PeekingIterator(Iterator<Integer> iterator) {
         // initialize any member here.
-        
+        while(iterator.hasNext()){
+            queue.offer(iterator.next());
+        }
     }
 
     // Returns the next element in the iteration without advancing the iterator.
     public Integer peek() {
-        
+        return queue.peek();
     }
 
     // hasNext() and next() should behave the same as in the Iterator interface.
     // Override them if needed.
     @Override
     public Integer next() {
-        
+        return queue.poll();
     }
 
     @Override
     public boolean hasNext() {
-        
+        return queue.isEmpty();
+    }
+}
+
+class PeekingIterator implements Iterator<Integer> {
+    Integer peek = null;
+    Iterator<Integer> iter;
+    public PeekingIterator(Iterator<Integer> iterator) {
+        // initialize any member here.
+        iter = iterator;
+        if(iter.hasNext()){
+            peek = iterator.next();
+        }
+    }
+
+    // Returns the next element in the iteration without advancing the iterator.
+    public Integer peek() {
+        return peek;
+    }
+
+    // hasNext() and next() should behave the same as in the Iterator interface.
+    // Override them if needed.
+    @Override
+    public Integer next() {
+        Integer val = peek;
+        peek = iter.hasNext() ? iter.next() : null;
+        return val;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return peek != null || iter.hasNext();
     }
 }
 
@@ -1360,6 +1521,20 @@ return 2.
 
 public class Solution {
     public int minMeetingRooms(Interval[] intervals) {
+        Arrays.sort(intervals, new Comparator<Interval>(){
+            @Override
+            public int compare(Interval i1, Interval i2){
+                return i1.start - i2.start;
+            }
+        });
+        PriorityQueue<Integer> queue = new PriorityQueue<Integer>();
+
+        for(int i = 0; i < intervals.length; i++){
+            Interval cur = intervals[i];
+            if(!queue.isEmpty() && queue.peek().end <= cur.start) queue.poll();
+            queue.offer(cur.end);
+        }
+        return queue.size();
     }
 }
 
@@ -1373,12 +1548,15 @@ You may assume that all inputs are consist of lowercase letters a-z.
 */
 class TrieNode {
     // Initialize your data structure here.
+    TrieNode[] children;
+    boolean isWord;
     public TrieNode() {
-        
+        children = new TrieNode[26];
+        isWord = false;
     }
 }
-
 public class Trie {
+
     private TrieNode root;
 
     public Trie() {
@@ -1387,18 +1565,38 @@ public class Trie {
 
     // Inserts a word into the trie.
     public void insert(String word) {
-        
+        TrieNode node = root;
+        for(char c : word){
+            int index = c-'a';
+            if(node.children[index] == null){
+                node.children[index] = new TrieNode();
+            }
+            node = node.children[index];
+        }
+        node.isWord = true;
     }
 
     // Returns if the word is in the trie.
     public boolean search(String word) {
-        
+        TrieNode node = root;
+        for(char c : word){
+            int index = c - 'a';
+            if(node.children[index] == null) return false;
+            node = node.children[index];
+        }
+        return node.isWord;
     }
 
     // Returns if there is any word in the trie
     // that starts with the given prefix.
     public boolean startsWith(String prefix) {
-        
+        TrieNode node = root;
+        for(char c : prefix){
+            int index = c-'a';
+            if(node.children[index] == null) return false;
+            node = node.children[index];
+        }
+        return true;
     }
 }
 
@@ -1433,7 +1631,18 @@ For example, given n = 3, a solution set is:
 */
 public class Solution {
     public List<String> generateParenthesis(int n) {
-        
+        List<String> res = new ArrayList();
+        helper(res, "", 0, 0, 3);
+        return res;
+    }
+
+    public void helper(List<String> res, String s, int open, int close, int n){
+        if(close == n){
+            res.add(s);
+            return;
+        }
+        if(open < n) helper(res, s+'(', open+1, close, n);
+        if(close < open) helper(res, s+')', open, close+1, n);
     }
 }
 
@@ -1442,7 +1651,32 @@ Game of Life
 */
 public class Solution {
     public void gameOfLife(int[][] board) {
-        
+        if(board == null || board.length == 0) return;
+        for(int i = 0; i < board.length; i++){
+            for(int j = 0; j < board[0].length; j++){
+                int liveNeighbor = countLiveNeighbors(board, i, j);
+                if(board[i][j] == 1 && (liveNeighbor < 2 || liveNeighbor > 3)) board[i][j] = 2;
+                if(board[i][j] == 0 && liveNeighbor == 3) board[i][j] = 3;
+            }
+        }
+
+        for(int i = 0; i < board.length; i++){
+            for(int j = 0; j < board[0].length; j++){
+                board[i][j] = board[i][j] % 2;
+            }
+        }
+    }
+
+    public int countLiveNeighbors(int[][] board, int m, int n){
+        int count = 0;
+        for(int i = m-1; i <= m+1; i++){
+            if (i < 0 || i >= board.length) continue;
+            for(int j = n-1; j <= n+1; j++){
+                if (j < 0 || j >= board[0].length || (i==m && j ==n)) continue;
+                if (board[i][j] == 1 || board[i][j] == 2) count++;
+            }
+        }
+        return count;
     }
 }
 
@@ -1460,8 +1694,11 @@ Examples:
 */
 public class Solution {
     public List<String> addOperators(String num, int target) {
-        
+        List<String> res = new ArrayList();
+
     }
+
+
 }
 
 /* 12
@@ -1489,7 +1726,8 @@ Binary Tree Longest Consecutive Sequence My Submissions Question
 Total Accepted: 709 Total Submissions: 2216 Difficulty: Medium
 Given a binary tree, find the length of the longest consecutive sequence path.
 
-The path refers to any sequence of nodes from some starting node to any node in the tree along the parent-child connections. The longest consecutive path need to be from parent to child (cannot be the reverse).
+The path refers to any sequence of nodes from some starting node to any node in the tree along the parent-child connections. 
+The longest consecutive path need to be from parent to child (cannot be the reverse).
 
 For example,
    1
@@ -1510,11 +1748,21 @@ Longest consecutive sequence path is 3-4-5, so return 3.
 Longest consecutive sequence path is 2-3,not3-2-1, so return 2.
 */
 public class Solution {
+    int max = 0;
     public int longestConsecutive(TreeNode root) {
-        
+        helper(root);
+        return max;
     }
-    
-    public void helper()
+    public int helper(TreeNode root) {
+        if(root == null) return 0;
+        int leftLength = helper(root.left);
+        int rightLength = helper(root.right);
+        leftLength = root.left != null && root.val + 1 == root.left.val ? leftLength+1 : 1;
+        rightLength = root.right != null && root.val + 1 == root.right.val ? rightLength+1 : 1;
+        int curLength = Math.max(leftLength, rightLength);
+        max = Math.max(max, curLength);
+        return curLength;
+    }
 }
 
 /* 14
@@ -1535,14 +1783,49 @@ All root-to-leaf paths are:
 */
 public class Solution {
     public List<String> binaryTreePaths(TreeNode root) {
-        
+        List<String> res = new ArrayList();
+        helper(res, root, new ArrayList());
+        return res;
+    }
+
+    private void helper(List<String> res, TreeNode node, List<String> path){
+        path.add(node);
+        if(node.left == null && node.right == null){
+            res.add(toPathString(path));
+        }
+        if(node.left != null) helper(res, node.left, path);
+        if(node.right != null) helper(res, node.right, path);
+        path.remove(path.size()-1);
+    }
+
+    private String toPathString(List<String> path){
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < path.size(); i++){
+            sb.append(path.get(i));
+            if(i!=path.size()-1) sb.append("->");
+        }
+        return sb.toString();
+    }
+
+    public List<String> binaryTreePaths(TreeNode root) {
+        List<String> res = new ArrayList();
+        helper(res, root, "");
+        return res;
+    }
+
+    private void dfs(List<String> res, TreeNode node, String path){
+        if(node == null) return;
+        if(node.left == null && node.right == null) res.add(path+node.val);
+        dfs(res, node.left, path+node.val+"->");
+        dfs(res, node.right, path+node.val+"->");
     }
 }
 
 /* 15
 Alien Dictionary My Submissions Question
 Total Accepted: 2136 Total Submissions: 11646 Difficulty: Hard
-There is a new alien language which uses the latin alphabet. However, the order among letters are unknown to you. You receive a list of words from the dictionary, where words are sorted lexicographically by the rules of this new language. Derive the order of letters in this language.
+There is a new alien language which uses the latin alphabet. However, the order among letters are unknown to you. 
+You receive a list of words from the dictionary, where words are sorted lexicographically by the rules of this new language. Derive the order of letters in this language.
 
 For example,
 Given the following words in dictionary,
@@ -1606,9 +1889,38 @@ After calling your function, the tree should look like:
      / \    \
     4-> 5 -> 7 -> NULL
 */
-
+// O(n), O(1);
 public class Solution {
     public void connect(TreeLinkNode root) {
+        TreeLinkNode head = null, pre = null, cur = root;
+        while(cur != null){
+            while(cur != null){
+                if(cur.left != null){
+                    if(pre == null){
+                        head = cur.left;
+                        pre = cur.left;
+                    }
+                    else{
+                        pre.next = cur.left;
+                        pre = pre.next;
+                    }
+                }
+                if(cur.right != null){
+                    if(pre == null){
+                        head = cur.right;
+                        pre = cur.right;
+                    }
+                    else {
+                        pre.next = cur.right;
+                        pre = pre.next;
+                    }
+                }
+                cur = cur.next;
+            }
+            cur = head;
+            head = null;
+            pre = null;
+        }
     }
 }
 
@@ -1658,7 +1970,37 @@ You may assume k is always valid, 1 ≤ k ≤ array's length.
 */
 public class Solution {
     public int findKthLargest(int[] nums, int k) {
+        return quickSelect(nums, k);
     }
+
+    public int quickSelect(int[] nums, int k){
+        int left = 0, right = nums.length-1;
+        while(left < right){
+            int index = partition(nums, left, right);
+            if(k-1 == index) return nums[index];
+            else if(k-1 < index) right = index-1;
+            else left = index+1;
+        }
+        return nums[left];
+    }
+
+    public int partition(int[] nums, int left, int right){
+        int index = left;
+        for(int i = left; i < right; i++){
+            if(nums[i] > nums[right]){
+                swap(nums, index++, i);
+            }
+        }
+        swap(nums, index, right);
+        return index;
+    }
+
+    private void swap(int[] nums, int left, int right){
+        int temp = nums[left];
+        nums[left] = nums[right];
+        nums[right] = temp;
+    }
+
 }
 
 // H-Index
