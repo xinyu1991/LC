@@ -2157,4 +2157,12 @@ public class Solution {
 
 }
 
+
+/*
+3. given a probability = [.5 .1 .2 .2], label = [A B C D], write a data structure that generates the label based on the prob. 我说先找cumulative probability［.5, .6, .8 1]， 
+然后弄个0～1之间的random数字比较过去找它的位置就好
+*/
+
+
+// Leetcode 79, 212
 // H-Index
