@@ -751,15 +751,101 @@ public class Solution {
 
 // 47 Course Schedule I and II
 public class Solution {
+    /*
+             * For example:
+
+2, [[1,0]]
+There are a total of 2 courses to take. To take course 1 you should have finished course 0. 
+So it is possible.
+
+2, [[1,0],[0,1]]
+             * */
     public boolean canFinish(int numCourses, int[][] prerequisites) {
+        HashMap<Integer, List<Integer>> courseMap = new HashMap();
+        HashMap<Integer, Integer> prerequisiteCount = new HashMap();
+
+        for(int i = 0; i < prerequisites.length; i++){
+            int course = prerequisites[i][0], pre = prerequisites[i][1];
+            List<Integer> dependenOnMe = courseMap.get(pre);
+            if(dependenOnMe == null) dependenOnMe = new ArrayList();
+            dependenOnMe.add(course);
+            courseMap.put(pre, dependenOnMe);
+            if(!prerequisiteCount.containsKey(course)) prerequisiteCount.put(course, 1);
+            else prerequisiteCount.put(course, prerequisiteCount.get(course)+1);
+        }
+
+        Queue<Integer> queue = new LinkedList();
+
+        for(Integer course : courseMap.keySet()){
+            if(!prerequisiteCount.containsKey(course)){
+                queue.offer(course);
+            }
+        }
+
+        while(!queue.isEmpty()){
+            int pre = queue.poll();
+            if(!courseMap.containsKey(pre)) continue;
+            for(int course : courseMap.get(pre)){
+                int count = prerequisiteCount.get(course);
+                if(count == 1){
+                    queue.offer(course);
+                    prerequisiteCount.remove(course);
+                }
+                else prerequisiteCount.put(course, count-1);
+            }
+        }
+
+        return prerequisiteCount.isEmpty();
     }
 
     public int[] findOrder(int numCourses, int[][] prerequisites) {
+        HashMap<Integer, List<Integer>> courseMap = new HashMap();
+        HashMap<Integer, Integer> prerequisiteCount = new HashMap();
+        for(int i = 0; i < numCourses; i++){
+            courseMap.put(i, new ArrayList());
+        }
+        for(int i = 0; i < prerequisites.length; i++){
+            int course = prerequisites[i][0], pre = prerequisites[i][1];
+            List<Integer> dependenOnMe = courseMap.get(pre);
+            dependenOnMe.add(course);
+            courseMap.put(pre, dependenOnMe);
+            if(!prerequisiteCount.containsKey(course)) prerequisiteCount.put(course, 1);
+            else prerequisiteCount.put(course, prerequisiteCount.get(course)+1);
+        }
+
+        int[] res = new int[numCourses];
+        int index = 0;
+        Queue<Integer> queue = new LinkedList();
+
+        for(Integer course : courseMap.keySet()){
+            if(!prerequisiteCount.containsKey(course)){
+                queue.offer(course);
+                res[index++] = course;
+            }
+        }
+
+        while(!queue.isEmpty()){
+            int pre = queue.poll();
+            if(!courseMap.containsKey(pre)) continue;
+            for(int course : courseMap.get(pre)){
+                int count = prerequisiteCount.get(course);
+                if(count == 1){
+                    queue.offer(course);
+                    res[index++] = course;
+                    prerequisiteCount.remove(course);
+                }
+                else prerequisiteCount.put(course, count-1);
+            }
+        }
+
+        if(!prerequisiteCount.isEmpty()) return new int[0];
+        return res;
     }
 }
 
 /* 48
-Given an array of n positive integers and a positive integer s, find the minimal length of a subarray of which the sum ≥ s. If there isn't one, return 0 instead.
+Given an array of n positive integers and a positive integer s, 
+find the minimal length of a subarray of which the sum ≥ s. If there isn't one, return 0 instead.
 
 For example, given the array [2,3,1,2,4,3] and s = 7,
 the subarray [4,3] has the minimal length under the problem constraint.

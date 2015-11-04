@@ -1727,12 +1727,39 @@ Examples:
 "00", 0 -> ["0+0", "0-0", "0*0"]
 "3456237490", 9191 -> []
 */
-public class Solution {
-    public List<String> addOperators(String num, int target) {
-        List<String> res = new ArrayList();
+public class Solution
+        {
+            public List<String> addOperators(String num, int target)
+            {
+                List<String> res = new ArrayList();
+                helper(res, num, "", 0, target, 0, 0);
+                return res;
+            }
 
-    }
-}
+            private void helper(List<String> res, String num, String path, int startIndex, int target, long sum, long eval)
+            {
+                if (startIndex == num.length() && sum == target)
+                {
+                    res.add(path);
+                }
+                for (int i = startIndex; i < num.length(); i++)
+                {
+                    if (i != startIndex && num.charAt(startIndex) == '0') break;
+                    long cur = Long.parseLong(num.substring(startIndex, i + 1));
+
+                    if (startIndex == 0)
+                    {
+                        helper(res, num, path + cur, i + 1, target, cur, cur);
+                    }
+                    else
+                    {
+                        helper(res, num, path + "+" + cur, i + 1, target, sum + cur, cur);
+                        helper(res, num, path + '-' + cur, i + 1, target, sum - cur, -cur);
+                        helper(res, num, path + '*' + cur, i + 1, target, sum - eval + eval * cur, eval * cur);
+                    }
+                }
+            }
+        }
 
 /* 12
 Basic Calculator My Submissions Question
@@ -1956,13 +1983,103 @@ Given the following words in dictionary,
 ]
 The correct order is: "wertf".
 
+["wrt","wrf","er","ett","rftt"]
+"twfre"
+
 Note:
 You may assume all letters are in lowercase.
 If the order is invalid, return an empty string.
 There may be multiple valid order of letters, return any one of them is fine.*/
-public class Solution {
-    public String alienOrder(String[] words) {
-        
+public class Solution
+{
+    private class CharNode
+    {
+        public char val;
+        public HashMap<Character, CharNode> neighbors;
+        public int dependencyCount;
+        public CharNode(char v)
+        {
+            val = v;
+            dependencyCount = 0;
+            neighbors = new HashMap();
+        }
+
+        public void addNeighbor(CharNode nextNode)
+        {
+            if (!neighbors.containsKey(nextNode.val))
+            {
+                nextNode.dependencyCount++;
+                neighbors.put(nextNode.val, nextNode);
+            }
+        }
+    }
+
+    public String alienOrder(String[] words)
+    {
+        if(words == null || words.length == 0) return "";
+        if(words.length == 1) return words[0];
+        HashMap<Character, CharNode> map = new HashMap<Character,CharNode>();
+        String pre = words[0];
+        for (int i = 1; i < words.length; i++)
+        {
+            String cur = words[i];
+            boolean orderChecked = false;
+            for (int j = 0; j < pre.length() || j < cur.length() ; j++)
+            {
+                if (j >= pre.length() || j >= cur.length())
+                {
+                    char c = j >= pre.length() ? cur.charAt(j) : pre.charAt(j);
+                    if (!map.containsKey(c))
+                    {
+                        map.put(c, new CharNode(c));
+                    }
+                    continue;
+                }
+                char preChar = pre.charAt(j);
+                char curChar = cur.charAt(j);
+                CharNode preNode = map.containsKey(preChar) ? map.get(preChar) : new CharNode(preChar);
+                if (preChar != curChar)
+                {
+                    CharNode curNode = map.containsKey(curChar) ? map.get(curChar) : new CharNode(curChar);
+                    if(!orderChecked){
+                        preNode.addNeighbor(curNode);
+                        orderChecked = true;
+                    }
+                    map.put(curChar, curNode); 
+                }
+                map.put(preChar, preNode);
+            }
+            pre = cur;
+        }
+        StringBuilder sb = new StringBuilder();
+        Queue<CharNode> queue = new LinkedList<CharNode>();
+
+        for(char c : map.keySet())
+        {
+            CharNode node = map.get(c);
+            if (node.dependencyCount == 0)
+            {
+                queue.offer(node);
+            }
+        }
+
+        while (!queue.isEmpty())
+        {
+            CharNode front = queue.poll();
+            sb.append(front.val);
+            for(CharNode node : front.neighbors.values())
+            {
+                node.dependencyCount--;
+                if (node.dependencyCount == 0)
+                {
+                    queue.offer(node);
+                }
+            }
+        }
+        for(CharNode node : map.values()){
+            if(node.dependencyCount != 0) return "";
+        }
+        return sb.toString();
     }
 }
 
