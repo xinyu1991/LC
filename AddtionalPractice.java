@@ -45,7 +45,29 @@ Given a string S, find the longest palindromic substring in S. You may assume th
 */
 public class Solution {
     public String longestPalindrome(String s) {
-        
+        int len = s.length();
+        if(len < 2) return s;
+
+        String longest = s.substring(0,1);
+        for(int i = 0; i < len-1; i++){
+            String p1 = expandCenter(s, i, i);
+            if(p1.length() > longest.length()){
+                longest = p1;
+            }
+            String p2 = expandCenter(s, i, i+1);
+            if(p2.length() > longest.length()){
+                longest = p2;
+            }
+        }
+        return longest;
+    }
+
+    public String expandCenter(String s, int i, int j){
+        while(i>=0 && j < s.length() && s.charAt(i) == s.charAt(j)){
+            i--;
+            j++;
+        }
+        return s.substring(i+1, j);
     }
 }
 
@@ -174,6 +196,7 @@ You may assume no duplicate exists in the array.
 
 public class Solution {
     public int search(int[] nums, int target) {
+
     }
 }
 
@@ -192,7 +215,15 @@ Here are few examples.
 */
 public class Solution {
     public int searchInsert(int[] nums, int target) {
-        
+        if(nums == null || nums.length == 0) return 0;
+        int left = 0, right = nums.length-1;
+        while(left <= right){
+            int mid = left+right >> 1;
+            if(nums[mid] == target) return mid;
+            if(nums[mid] < target) left = mid+1;
+            else right = mid-1;
+        }
+        return left;
     }
 }
 
@@ -257,6 +288,20 @@ Given array A = [2,3,1,1,4]
 The minimum number of jumps to reach the last index is 2. (Jump 1 step from index 0 to 1, then 3 steps to the last index.)*/
 public class Solution {
     public int jump(int[] nums) {
+        // The maxReach is the max index it can reach at this point. 
+        // curReach is max index it can reach with this jump.
+        // Every time we reach the position of curReach, we use choose maxReach to do the next jump. 
+        int step = 0, maxReach = 0, curReach = 0;
+        for(int i = 0; i < nums.length; i++){
+            if(i > curReach) return -1;
+            if(curReach >= nums.length-1) break;
+            maxReach = Math.max(maxReach, nums[i]+i);
+            if(i == curReach){
+                curReach = maxReach;
+                step++;
+            }
+        }
+        return step;
     }
 }
 
