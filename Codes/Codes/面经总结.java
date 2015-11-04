@@ -61,3 +61,143 @@ When inserting (4,1), we need to watch the Tvalue, starting from the first eleme
 给定树的⾼高度，求有多少种这样的binary tree
 
 14. Leetcode 139,140: Word Break I, II
+
+15. Roman -> Integer
+
+16 backpack
+
+17 skiing
+
+18。 ⽤用RAND2()去实现RAND6() 
+
+int sum = -1;
+while (true) {
+	sum = 4 * rand.nextInt(2) + 2 * rand.nextInt(2) + rand.nextInt(2);
+	if (sum <= 5) {
+		break;
+	}
+}
+return sum;
+
+19. Trapping Rain Water II  http://www.cnblogs.com/easonliu/p/4743644.html
+
+
+
+
+20 报一个失败的面经：
+GOOGLE SEATTLE 一共5轮
+
+1.韩国人，很NICE，谈得挺开心，上来先BEHAVIORAL，然后问了一堆小问题，比如如何generate unique id,如何SCALE KEY-VALUE STORAGE.
+Mac-Address with timestamp 
+
+2.好像是美国人，考了READ1024-CALL MULTIPLE TIMES ， 由于OJ上要收钱，没看，CODE写的一塌糊涂。
+
+3.国人姐姐，很NICE，中间开始讲中文，考了CELEBRITY FINDING，CODE在引导之下写出WORST CASE O(N)，表现的也差强人意。 !!!
+
+4.美国人带SHADOW，上来考了个CUP装水的问题，FOUNTAIN MACHINE有不同的optION对应不同出水量，出水量是个RANGE，CUP VOLUME也是RANGE，求可能的SEQUENCE，简单RECURSION搞定。
+   然后考了TWITTER FEED的设计，答得不好，后来网上找好像需要用到PUB/SUB的概念，但是还是没找到好的REFERENCE，希望有高人有LINK或者给我解释下。
+
+5.美国人，考了POW和找H-INDEX，最后H-INDEX勉强写出O(N),发挥的还行吧。 !!!!
+
+
+21. shuffle. 输入是[0,2,_,3] 输出是[0,_,2,3]. 就是一个乱序数组, 其中缺少了一个值, 然后输出, 每个数值都在自己对应的index上面.但是移动的时候, 只能把数字放在空缺的位置上, 要求移动的次数最少
+Keep a HashMap of unmatched num and its index, track the index of  '_', If there is no unmatched num, return. Otherwise, if the '_' is in the position of missing num, then randomly select an unmatched num,
+swap to the pos of '_'. If the '_' is not in the position of missing num, then just swap it with the number that need to be in the position. Do this until done.
+
+22. Determine Binary Tree is complete tree.
+
+23. random maze generator. 其实就是在一个二维空间画墙但不能允许有封闭空间
+
+24. 题目大致是BACCBBAAA -> ABABACABC，就是输出相邻字母不能相同的string  
+Greedy Algorithm, using max heap, deal with characters with most counts first
+
+unordered_map<char, int> map;
+string noSameNeighbor(string & s){
+        string ans = "";
+        for (char c : s)
+                map[c]++;                
+        
+        auto comp = [](char char1, char char2){return map[char1] < map[char2]; };
+        priority_queue <char, vector<char>, decltype(comp)> pq(comp);
+        for (pair<char, int> p : map)
+                pq.push(p.first);
+
+        while (!pq.empty()){
+                char c = pq.top();
+                pq.pop();
+                if (pq.empty()){
+                        ans += c ;
+                        break;
+                }
+                char d = pq.top();
+                pq.pop();
+                ans += c;
+                ans += d;
+                map[c]--;
+                map[d]--;
+                if (map[c] > 0) pq.push(c);
+                if (map[d] > 0) pq.push(d);
+        }
+ 
+        return ans;
+}
+
+
+private static String helper(String s) {
+                final Map<Character, Integer> map = new HashMap<Character, Integer>();
+                char[] ss = s.toCharArray();
+                for (int i = 0; i < ss.length; i++) {
+                        if (map.containsKey(ss)) {
+                                map.put(ss, map.get(ss) + 1);
+                        } else {
+                                map.put(ss, 1);
+                        }
+                }
+                Queue<Character> queue = new PriorityQueue<Character>(1, new Comparator<Character>() {
+                        @Override
+                        public int compare(Character c1, Character c2) {
+                                int num1 = map.get(c1);
+                                int num2 = map.get(c2);
+                                if (num1 > num2) {
+                                        return -1;
+                                } else if (num1 < num2) {
+                                        return 1;
+                                } else {
+                                        return 0;
+                                }
+                        }
+                });
+                for (Map.Entry<Character, Integer> entry: map.entrySet()) {
+                        queue.add(entry.getKey());
+                }
+                StringBuilder rs = new StringBuilder("");
+                while (!queue.isEmpty()) {
+                        Character c1 = queue.poll();
+                        if (queue.isEmpty()) {
+                                rs.append(c1);
+                                break;
+                        }
+                        Character c2 = queue.poll();
+                        rs.append(c1);
+                        rs.append(c2);-google 1point3acres
+                        if (map.get(c1) > 1) {
+                                map.put(c1, map.get(c1) - 1);
+                                queue.offer(c1);
+                        }. 1point 3acres 璁哄潧
+                        if (map.get(c2) > 1) {
+                                map.put(c2, map.get(c2) - 1);
+                                queue.offer(c2);
+                                
+                        }
+                }
+                return rs.toString();
+            }
+
+24. 欧拉回路？De Bruijn sequence
+
+
+25. Two pointers
+given sorted array of doubles, return the another sorted array of doubles where all elements are the squares from the input array， 然后optimize⼀一下到O(n)
+Two pointers from both sides, moving towards middle
+
+26. 输出任意permutation使得List中的相同element的间距要小于 minDistance。 (The same idea as No. 24, just change the distance from 1 to K)

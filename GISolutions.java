@@ -2095,7 +2095,36 @@ A solution using O(n) space is pretty straight forward. Could you devise a const
 */
 public class Solution {
     public void recoverTree(TreeNode root) {
+        TreeNode node1 = null, node2 = null;
+
+        Stack<TreeNode> stack = new Stack();
+        addLeftChild(stack, root);
+        TreeNode pre = null;
+        while(!stack.isEmpty()){
+            TreeNode top = stack.pop();
+            if(pre != null && pre.val > top.val){
+                if(node1 == null) node1 = pre;
+                node2 = top;
+            }
+            
+            if(top.right != null){
+                addLeftChild(stack, top.right);
+            }
+            pre = top;
+        }
         
+        if(node1 != null && node2 != null){
+            int temp = node1.val;
+            node1.val = node2.val;
+            node2.val = temp;
+        }
+    }
+
+    private void addLeftChild(Stack<TreeNode> stack, TreeNode node){
+        while(node!=null){
+            stack.push(node);
+            node = node.left;
+        }
     }
 }
 

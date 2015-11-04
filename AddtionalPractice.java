@@ -8,7 +8,33 @@ Output: 7 -> 0 -> 8
 
 public class Solution {
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-        
+        if(l1 == null) return l2;
+        if(l2 == null) return l1;
+        ListNode dummy = new ListNode();
+        ListNode cur = dummy;
+        int val = 0, flag = 0;
+        while(l1 != null && l2 != null){
+            val = l1 + l2 + flag;
+            flag = val >= 10 ? 1 : 0;
+            val = val >= 10 ? val - 10 : val;
+            cur.next = new ListNode(val);
+            cur = cur.next;
+            l1 = l1.next;
+            l2 = l2.next;
+        }
+        ListNode left = l1 == null ? l2 : l1;
+        while (left!=null){
+            if(flag == 1){
+                val = left.val == 9 ? 0 : left.val+1;
+                flag = left.val == 9 ? 1 : 0;
+                cur.next = new ListNode(val);
+            }
+            else cur.next = new ListNode(left.val);
+            cur = cur.next;
+            left = left.next;
+        }
+        if(flag == 1) cur.next = new ListNode(1);
+        return dummy.next;
     }
 }
 
@@ -68,7 +94,32 @@ For k = 3, you should return: 3->2->1->4->5
 */
 public class Solution {
     public ListNode reverseKGroup(ListNode head, int k) {
-        
+        if(head == null || k == 1) return head;
+        ListNode temp = head;
+        int length = 0;
+        while(temp != null){
+            length++;
+            temp = temp.next;
+        }
+        if(length < k) return head;
+        ListNode dummy = new ListNode(0);
+        ListNode cur = dummy;
+        ListNode nex = null;
+        ListNode tail = head;
+        while(length >= k){
+            for(int i = 0; i < k; i++){
+                if(head == null) break;
+                nex = cur.next;
+                cur.next = head;
+                head = head.next;
+                cur.next.next = nex;
+            }
+            length -= k;
+            cur = tail;
+            tail = head;
+        }
+        cur.next = head;
+        return dummy.next;
     }
 }
 
@@ -217,6 +268,14 @@ For example, given the array [−2,1,−3,4,−1,2,1,−5,4],
 the contiguous subarray [4,−1,2,1] has the largest sum = 6.*/
 public class Solution {
     public int maxSubArray(int[] nums) {
+        if(nums == null || nums.length == 0) return 0;
+        int preMax = nums[0], curMax = nums[0], max = nums[0];
+        for(int i = 1; i < nums.length; i++){
+            curMax = Math.max(preMax + nums[i], nums[i]);
+            preMax = curMax;
+            max = Math.max(curMax, max);
+        }
+        return max;
     }
 }
 
@@ -852,7 +911,15 @@ the subarray [4,3] has the minimal length under the problem constraint.
 */
 public class Solution {
     public int minSubArrayLen(int s, int[] nums) {
-        
+        int start = 0, sum = 0, min = nums.length+1;
+        for(int i = 0; i < nums.length; i++){
+            sum += nums[i];
+            while(sum >= s){
+                min = Math.min(i-start+1, min);
+                sum -= nums[start++];
+            }
+        }
+        return min == nums.length+1 ? 0 : min;
     }
 }
 
