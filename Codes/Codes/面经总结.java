@@ -287,3 +287,18 @@ Read Heavy vs Write Heavy
 Consistent Hashing
 Sticky Sessions
 Structured Data(uses DynamoDB) vs Unstructured Data(uses S3)
+
+
+
+
+public class CardGame{
+    public static CardGame createCardGame(GameType type){
+        if(type == GameType.Porker){
+            return new PorkerGame();
+        }
+        if(type == GameType.BlackJack){
+            return new BlackJack;
+        }
+        return nuklk
+    }
+}
