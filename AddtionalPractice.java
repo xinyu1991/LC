@@ -252,13 +252,7 @@ public class Solution {
     }
 }
 
-// 12 Trapping Rain Water
 
-public class Solution {
-    public int trap(int[] height) {
-        
-    }
-}
 
 /* 13  Multiply Strings My Submissions Question
 Total Accepted: 45114 Total Submissions: 208912 Difficulty: Medium
@@ -405,17 +399,7 @@ public class Solution {
     }
 }
 
-/* 20 
-Sqrt(x) My Submissions Question
-Total Accepted: 71240 Total Submissions: 298949 Difficulty: Medium
-Implement int sqrt(int x).
 
-Compute and return the square root of x.
-*/
-public class Solution {
-    public int mySqrt1(int x){
-    }
-}
 
 /* 21
 Simplify Path My Submissions Question
@@ -525,6 +509,40 @@ Given a 2D binary matrix filled with 0's and 1's, find the largest rectangle con
 */
 public class Solution {
     public int maximalRectangle(char[][] board) {
+        if(board == null || board.length == 0) return 0;
+        int rowLen = board.length, colLen = board[0].length;
+        int[] left = new int[colLen];
+        int[] right = new int[colLen];
+        int[] height = new int[colLen];
+        Arrays.fill(right, colLen);
+        int max = 0;
+        for(int i = 0; i < rowLen; i++){
+            int curLeft = 0, curRight = colLen;
+            for(int j = 0; j < colLen; j++){
+                if(board[i][j] == '1'){
+                    height[j]++;
+                    left[j] = Math.max(curLeft, left[j]);
+                }
+                else{
+                    height[j] = 0;
+                    left[j] = 0;
+                    curLeft = j+1;
+                }
+            }
+            for(int j = colLen-1; j>=0; j--){
+                if(board[i][j] == '1'){
+                    right[j] = Math.min(curRight, right[j]);
+                }
+                else{
+                    right[j] = colLen;
+                    curRight = j;
+                }
+            }
+            for(int j = 0; j < colLen; j++){
+                max = Math.max(max, (right[j]-left[j])*height[j]);
+            }
+        }
+        return max;
     }
 }
 
@@ -533,6 +551,7 @@ Scramble String
 */
 public class Solution {
     public boolean isScramble(String s1, String s2) {
+
     }
 }
 
@@ -884,24 +903,7 @@ public class Solution {
     }
 }
 
-/* 41
-Word Break II My Submissions Question
-Total Accepted: 43549 Total Submissions: 240709 Difficulty: Hard
-Given a string s and a dictionary of words dict, add spaces in s to construct a sentence where each word is a valid dictionary word.
 
-Return all such possible sentences.
-
-For example, given
-s = "catsanddog",
-dict = ["cat", "cats", "and", "sand", "dog"].
-
-A solution is ["cats and dog", "cat sand dog"].
-*/
-public class Solution {
-    public List<String> wordBreak(String s, Set<String> wordDict) {
-        
-    }
-}
 
 /* 42 Find Minimum in Rotated Sorted Array II My Submissions Question
 Total Accepted: 39031 Total Submissions: 119046 Difficulty: Hard
@@ -1343,7 +1345,7 @@ public class Solution extends Relation {
     public int findCelebrity(int n) {
         int candidate = 0;
         for(int i = 1; i < n; i++){
-            if(knows(candidate, i))
+            if(!knows(i, candidate))
                 candidate = i;
         }
         for(int i = 0; i < n; i++){

@@ -1635,25 +1635,7 @@ public class Trie {
     }
 }
 
-/* 8
-Graph Valid Tree My Submissions Question
-Total Accepted: 3450 Total Submissions: 12959 Difficulty: Medium
-Given n nodes labeled from 0 to n - 1 and a list of undirected edges (each edge is a pair of nodes), write a function to check whether these edges make up a valid tree.
 
-For example:
-
-Given n = 5 and edges = [[0, 1], [0, 2], [0, 3], [1, 4]], return true.
-
-Given n = 5 and edges = [[0, 1], [1, 2], [2, 3], [1, 3], [1, 4]], return false.
-
-Show Hint 
-Note: you can assume that no duplicate edges will appear in edges. Since all edges are undirected, [0, 1] is the same as [1, 0] and thus will not appear together in edges.
-*/
-public class Solution {
-    public boolean validTree(int n, int[][] edges) {
-
-    }
-}
 
 /* 9
 Generate  Parentheses My Submissions Question
@@ -2303,6 +2285,65 @@ public class Solution {
 
 }
 
+// tree serializer.
+public class Codec {
+
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        if(root==null) return "#,";
+        String res = root.val + ",";
+        res += serialize(root.left);
+        res += serialize(root.right);
+        return res;
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        if(data.equals("") || data.equals("#")) return null;
+        Queue<String> nodes = new LinkedList();
+        nodes.addAll(Arrays.asList(data.split(",")));
+        return helper(nodes);
+    }
+    
+    public TreeNode helper(Queue<String> nodes){
+        if(nodes.isEmpty()) return null;
+        String str = nodes.poll();
+        if(str.equals("#")) return null;
+        TreeNode node = new TreeNode(Integer.valueOf(str));
+        node.left = helper(nodes);
+        node.right = helper(nodes);
+        return node;
+    }
+}
+
+/*
+Longest Increasing Subsequence My Submissions Question
+Total Accepted: 2570 Total Submissions: 8088 Difficulty: Medium
+Given an unsorted array of integers, find the length of longest increasing subsequence.
+
+For example,
+Given [10, 9, 2, 5, 3, 7, 101, 18],
+The longest increasing subsequence is [2, 3, 7, 101], therefore the length is 4. Note that there may be more than one LIS combination, it is only necessary for you to return the length.
+
+Your algorithm should run in O(n2) complexity.
+
+Follow up: Could you improve it to O(n log n) time complexity?
+*/
+public class Solution {
+    public int lengthOfLIS(int[] nums) {
+        // keep a list of the smallest num at its position.
+        ArrayList<Integer> res = new ArrayList();
+        for(int num : nums){
+            if(res.isEmpty() || res.get(res.size()-1) < num) res.add(num);
+            else{
+                int insertPoint = Collections.binarySearch(res, num);
+                if(insertPoint < 0) insertPoint = -insertPoint -1;
+                res.set(insertPoint, num);
+            }
+        }
+        return res.size();
+    }
+}
 
 /*
 3. given a probability = [.5 .1 .2 .2], label = [A B C D], write a data structure that generates the label based on the prob. 我说先找cumulative probability［.5, .6, .8 1]， 
@@ -2311,4 +2352,132 @@ public class Solution {
 
 
 // Leetcode 79, 212
+public class Solution {
+    public List<String> findWords(char[][] board, String[] words) {
+        
+    }
+}
+
+
 // H-Index
+/*
+For example, given citations = [3, 0, 6, 1, 5], which means the researcher has 5 papers in total and each of them had received 3, 0, 6, 1, 5 citations respectively. 
+Since the researcher has 3 papers with at least 3 citations each and the remaining two with no more than 3 citations each, his h-index is 3.
+*/
+public class Solution {
+    public int hIndex(int[] citations) {
+        if(citations == null) return 0;
+        int len = citations.length;
+        int[] counts = new int[len+1];
+        for(int c : citations){
+            if(c >= len) counts[len]++;
+            else counts[c]++;
+        }
+        int sum = 0;
+        for(int i = len; i >= 0; --i){
+            sum += counts[i];
+            if(sum >= i) return i;
+        }
+        return 0;
+    }
+}
+
+// Sorted
+public class Solution {
+    public int hIndex(int[] citations) {
+        if(citations == null || citations.length == 0) return 0;
+        int left = 0, right = citations.length-1;
+        while(left < right){
+            int mid = left+right >> 1;
+            int cite = citations[mid];
+            int higherCount = citations.length-mid;
+            if(cite == higherCount) return cite;
+            if(cite > higherCount){
+                right = mid;
+            }
+            else left = mid+1;
+        }
+        return Math.min(citations[left], citations.length-left);
+    }
+}
+
+
+// 12 Trapping Rain Water
+
+public class Solution {
+    public int trap(int[] height) {
+        
+    }
+}
+
+/* 8
+Graph Valid Tree My Submissions Question
+Total Accepted: 3450 Total Submissions: 12959 Difficulty: Medium
+Given n nodes labeled from 0 to n - 1 and a list of undirected edges (each edge is a pair of nodes), write a function to check whether these edges make up a valid tree.
+
+For example:
+
+Given n = 5 and edges = [[0, 1], [0, 2], [0, 3], [1, 4]], return true.
+
+Given n = 5 and edges = [[0, 1], [1, 2], [2, 3], [1, 3], [1, 4]], return false.
+
+Show Hint 
+Note: you can assume that no duplicate edges will appear in edges. Since all edges are undirected, [0, 1] is the same as [1, 0] and thus will not appear together in edges.
+*/
+public class Solution {
+    public boolean validTree(int n, int[][] edges) {
+
+    }
+}
+
+/* 20 
+Sqrt(x) My Submissions Question
+Total Accepted: 71240 Total Submissions: 298949 Difficulty: Medium
+Implement int sqrt(int x).
+
+Compute and return the square root of x.
+*/
+public class Solution {
+    public int mySqrt1(int x){
+    }
+}
+
+/* 41
+Word Break II My Submissions Question
+Total Accepted: 43549 Total Submissions: 240709 Difficulty: Hard
+Given a string s and a dictionary of words dict, add spaces in s to construct a sentence where each word is a valid dictionary word.
+
+Return all such possible sentences.
+
+For example, given
+s = "catsanddog",
+dict = ["cat", "cats", "and", "sand", "dog"].
+
+A solution is ["cats and dog", "cat sand dog"].
+*/
+public class Solution {
+    public List<String> wordBreak(String s, Set<String> wordDict) {
+        
+    }
+}
+
+/*
+Unique Binary Search Trees II My Submissions Question
+Total Accepted: 42996 Total Submissions: 149106 Difficulty: Medium
+Given n, generate all structurally unique BST's (binary search trees) that store values 1...n.
+
+For example,
+Given n = 3, your program should return all 5 unique BST's shown below.
+
+   1         3     3      2      1
+    \       /     /      / \      \
+     3     2     1      1   3      2
+    /     /       \                 \
+   2     1         2                 3
+*/
+
+public class Solution {
+    public List<TreeNode> generateTrees(int n) {
+        
+    }
+}
