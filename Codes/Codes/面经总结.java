@@ -287,3 +287,67 @@ Read Heavy vs Write Heavy
 Consistent Hashing
 Sticky Sessions
 Structured Data(uses DynamoDB) vs Unstructured Data(uses S3)
+
+
+skiing Problem
+#include <iostream>    
+    
+using namespace std;    
+//全局记录    
+int points[ 100 ][ 100 ];    
+int maxlen[ 100 ][ 100 ] = { 0 };    
+int row ,col;    
+    
+//DP的函数    
+int DP( int i, int j )    
+    
+{    
+    
+      int max = 0;    
+      //检查该点是否已经处理过（原来数组里都初始化为0，处理过的数据大于0，记忆化搜索的方法）    
+      if ( maxlen[ i ][ j ] )     
+           return maxlen[ i ][ j ];    
+    
+      //递归记录下每个点的最长长度    
+    
+      //向上    
+    
+      if ( j > 0 && points[ i ][ j ] > points[ i ][ j - 1 ] && max < DP( i, j - 1 ) )  //三个判断分别是：防止越界&& 高度比较&& 是否最优，下同    
+           max = DP( i, j - 1 );    
+      //向下    
+      if (j < col - 1 && points[ i ][ j ] > points[ i ][ j + 1 ] && max < DP( i, j + 1 ) )    
+           max = DP( i, j + 1 );    
+      //向左    
+      if ( i > 0 && points[ i ][ j ] > points[ i - 1 ][ j ] && max < DP( i - 1, j ) )    
+           max = DP( i - 1, j );    
+      //向右    
+      if ( i < row - 1 && points[ i ][ j ] > points[ i + 1 ][ j ] && max < DP( i + 1, j ) )    
+           max = DP( i + 1, j );    
+      //搜索完成后记录结果，如果四个方向都没有符合的点，则max仍然为，结果是；    
+      maxlen[ i ][ j ] = max + 1;    
+      //返回    
+      return maxlen[ i ][ j ];    
+}    
+int main()    
+    
+{     
+      int i, j, max = 0;    
+      cin >> row >> col;    
+      //读入    
+      for ( i = 0; i < row; i ++ )    
+           for ( j = 0; j < col; j ++ )    
+                 cin >> points[ i ][ j ];    
+      //逐个点处理    
+      for ( i = 0; i < row; i ++ )    
+           for ( j = 0; j < col; j ++ )    
+                 DP( i, j );    
+    
+      //寻找最大值    
+    
+      for (i = 0; i < row; i ++ )    
+           for ( j = 0; j < col; j ++ )    
+                 if ( max < maxlen[ i ][ j ] )    
+                      max = maxlen[ i ][ j ];    
+      cout << max << endl;    
+    return 0;    
+}   
