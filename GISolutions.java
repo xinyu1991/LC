@@ -2807,6 +2807,30 @@ Implement int sqrt(int x).
 
 Compute and return the square root of x.
 */
+
+/* 20 
+Sqrt(x) My Submissions Question
+Total Accepted: 71240 Total Submissions: 298949 Difficulty: Medium
+Implement int sqrt(int x).
+        f(x) = x^2-n; f'(x) = 2x; 
+       tagent line  g(x) = g(x0) + f'(x)*(x-x0) = f(x0) +f'(x0)*(x-x0); 
+         * Next point x1 - x0= (0-f(x0))/f'(x0);
+         * x1 = x0-f(x0)/f'(x0) = x0-(x0^2-n)/(2x0) = (x0/2 + n/x0);
+Compute and return the square root of x.
+*/
+        public int mySqrt1(int x)
+        {
+            if (x <= 0) return 0;
+            int cur = x/2;
+            int pre = 0;
+            while (pre != cur)
+            {
+                pre = cur;
+                cur = (cur/2 + x/(2*cur));
+            }
+            return cur;
+        }
+
 public class Solution {
     public int mySqrt(int x){
         if(x<= 1) return x;
