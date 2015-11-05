@@ -2354,9 +2354,246 @@ public class Solution {
 // Leetcode 79, 212
 public class Solution {
     public List<String> findWords(char[][] board, String[] words) {
-        
+        HashSet<String> res = new HashSet();
+        Trie trie = new Trie();
+        for(String word : words){
+            trie.insert(word);
+        }
+        int m = board.length, n = board[0].length;
+        boolean[][] visited = new boolean[m][n];
+        for(int i = 0; i < m; i++){
+            for(int j =0; j < n; j++){
+                search(res, trie, board, visited, i, j, "");
+            }
+        }
+        return res;
+    }
+
+    public void search(HashSet<String> res, Trie trie, char[][] board, boolean[][] visited, int i, int j, String str){
+        if(i < 0 || j < 0 || i >= visited.length || j >= visited[0].length) return;
+        if(visited[i][j]) return;
+        str += board[i][j];
+        if(!trie.startsWith(str)) return;
+        if(trie.search(str)) res.add(str);
+        visited[i][j] = true;
+        search(res, trie, board, visited, i-1, j, str);
+        search(res, trie, board, visited, i+1, j, str);
+        search(res, trie, board, visited, i, j-1, str);
+        search(res, trie, board, visited, i, j+1, str);
+        visited[i][j] = false;
     }
 }
+
+public class Solution {
+    Set<String> res = new HashSet<String>();
+    
+    public List<String> findWords(char[][] board, String[] words) {
+        Trie trie = new Trie();
+        for (String word : words) {
+            trie.insert(word);
+        }
+        
+        int m = board.length;
+        int n = board[0].length;
+        boolean[][] visited = new boolean[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                dfs(board, visited, "", i, j, trie);
+            }
+        }
+        
+        return new ArrayList<String>(res);
+    }
+    
+    public void dfs(char[][] board, boolean[][] visited, String str, int x, int y, Trie trie) {
+        if (x < 0 || x >= board.length || y < 0 || y >= board[0].length) return;
+        if (visited[x][y]) return;
+        
+        str += board[x][y];
+        if (!trie.startsWith(str)) return;
+        
+        if (trie.search(str)) {
+            res.add(str);
+        }
+        
+        visited[x][y] = true;
+        dfs(board, visited, str, x - 1, y, trie);
+        dfs(board, visited, str, x + 1, y, trie);
+        dfs(board, visited, str, x, y - 1, trie);
+        dfs(board, visited, str, x, y + 1, trie);
+        visited[x][y] = false;
+    }
+}
+
+class TrieNode {
+    public TrieNode[] children = new TrieNode[26];
+    public String item = "";
+    
+    // Initialize your data structure here.
+    public TrieNode() {
+    }
+}
+
+class Trie {
+    private TrieNode root;
+
+    public Trie() {
+        root = new TrieNode();
+    }
+
+    // Inserts a word into the trie.
+    public void insert(String word) {
+        TrieNode node = root;
+        for (char c : word.toCharArray()) {
+            if (node.children[c - 'a'] == null) {
+                node.children[c - 'a'] = new TrieNode();
+            }
+            node = node.children[c - 'a'];
+        }
+        node.item = word;
+    }
+
+    // Returns if the word is in the trie.
+    public boolean search(String word) {
+        TrieNode node = root;
+        for (char c : word.toCharArray()) {
+            if (node.children[c - 'a'] == null) return false;
+            node = node.children[c - 'a'];
+        }
+        return node.item.equals(word);
+    }
+
+    // Returns if there is any word in the trie
+    // that starts with the given prefix.
+    public boolean startsWith(String prefix) {
+        TrieNode node = root;
+        for (char c : prefix.toCharArray()) {
+            if (node.children[c - 'a'] == null) return false;
+            node = node.children[c - 'a'];
+        }
+        return true;
+    }
+}
+
+class Solution {
+public:
+    struct TrieNode{
+
+        bool is_end;
+        bool starts_with;
+        struct TrieNode* children[26];
+    };
+
+    struct TrieNode* createNode(){
+        struct TrieNode* n = new TrieNode;
+        n->is_end = false;
+        n->starts_with = false;
+
+        for(int i = 0 ; i < 26; i++){
+            n->children[i] = NULL;
+        }
+        return n;
+    }
+
+    void insert(TrieNode* root, string s){
+        int len = s.length();
+        for(int i = 0; i < len; i++){
+            if(root->children[s[i] - 'a'] == NULL){
+                root->children[s[i] - 'a'] = createNode();
+                root->children[s[i] - 'a']->starts_with = true;
+            }
+            root = root->children[s[i] - 'a'];
+        }
+        root->is_end = true;
+    }
+
+    bool search(TrieNode* root, string s){
+        int len = s.length();
+
+        for(int i = 0 ; i < len; i++){
+            if(root->children[s[i] - 'a'] == NULL){
+                return false;
+            }
+            root = root->children[s[i] - 'a'];
+        }
+
+        return root->is_end;
+    }
+
+    bool startsWith(TrieNode* root, string s){
+        int len = s.length();
+        for(int i = 0; i < len; i++){
+            if(root->children[s[i] - 'a']  == NULL){
+                return false;
+            }
+
+            root = root->children[s[i] - 'a'];
+        }
+        return root->starts_with;
+    }
+
+    void helper(vector<vector<char> >& board, string s, int x, int y, vector<string>& res, bool** track, TrieNode* root){
+        if(x < 0 || x >= board.size() || y < 0 || y >= board[0].size() || track[x][y] == true){
+            return;
+        }
+
+        s += board[x][y];
+
+        if(!startsWith(root,s)){
+            return;
+        }
+
+        if(search(root,s)){
+            res.push_back(s);
+        }
+
+        track[x][y] = true;
+
+        helper(board, s,x-1,y,res,track,root);
+        helper(board, s,x+1,y,res,track,root);
+        helper(board, s,x,y-1,res,track,root);
+        helper(board, s,x,y+1,res,track,root);
+
+        track[x][y] = false;
+    }
+
+    vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
+        int n = words.size();
+        vector<string> res;
+        bool** track = new bool*[board.size()];
+
+        for(int i = 0 ; i < board.size(); i++){
+
+            track[i] = new bool[board[0].size()];
+        }
+        for(int i = 0;  i <  board.size(); i++){
+           for(int j = 0 ; j < board[0].size(); j++){
+               track[i][j] = false;
+           }
+        }
+        if(n == 0){
+
+            return res;
+        }
+
+        TrieNode* root = createNode();
+        for(int i = 0; i < n; i++){
+
+            insert(root,words[i]);
+
+        }
+
+        for (int i = 0; i < board.size(); i++) {
+            for (int j = 0; j < board[0].size(); j++) {
+               helper(board,"",i,j,res,track,root);
+            }
+        }
+
+        sort(res.begin(),res.end());
+        res.erase( unique( res.begin(), res.end() ), res.end() );
+        return res;
+    }
+};
 
 
 // H-Index
@@ -2422,11 +2659,144 @@ Given n = 5 and edges = [[0, 1], [0, 2], [0, 3], [1, 4]], return true.
 Given n = 5 and edges = [[0, 1], [1, 2], [2, 3], [1, 3], [1, 4]], return false.
 
 Show Hint 
-Note: you can assume that no duplicate edges will appear in edges. Since all edges are undirected, [0, 1] is the same as [1, 0] and thus will not appear together in edges.
+Note: you can assume that no duplicate edges will appear in edges. Since all edges are undirected, 
+[0, 1] is the same as [1, 0] and thus will not appear together in edges.
 */
 public class Solution {
-    public boolean validTree(int n, int[][] edges) {
+    public boolean validTree(int n, int[][] edges)
+        {
+            // Use an adjacent list to store the graph
+            List<Set<Integer>> graph = new ArrayList();
+            for (int i = 0; i < n; i++)
+            {
+                graph.add(new HashSet());
+            }
 
+            for(int[] edge : edges)
+            {
+                graph.get(edge[0]).add(edge[1]);
+                graph.get(edge[1]).add(edge[0]);
+            }
+
+            boolean[] visited = new boolean[n];
+
+            Stack<Integer> stack = new Stack<Integer>();
+            stack.push(0);
+
+            while (!stack.isEmpty())
+            {
+                int node = stack.pop();
+                if (visited[node]) return false;
+                visited[node] = true;
+                for(int neighbor : graph.get(node))
+                {
+                    stack.push(neighbor);
+                    graph.get(neighbor).remove(node);
+                }
+            }
+
+            for(boolean visit : visited)
+            {
+                if (!visit) return false;
+            }
+            return true;
+        }
+    public boolean validTreeBFS(int n, int[][] edges)
+        {
+            // Use an adjacent list to store the graph
+            List<Set<Integer>> graph = new ArrayList();
+            for (int i = 0; i < n; i++)
+            {
+                graph.add(new HashSet());
+            }
+
+            for(int[] edge : edges)
+            {
+                graph.get(edge[0]).add(edge[1]);
+                graph.get(edge[1]).add(edge[0]);
+            }
+
+            boolean[] visited = new boolean[n];
+
+            Queue<Integer> queue = new LinkedList<Integer>();
+            queue.add(0);
+
+            while (!queue.isEmpty())
+            {
+                int node = queue.poll();
+                if (visited[node]) return false;
+                visited[node] = true;
+                for(int neighbor : graph.get(node))
+                {
+                    queue.offer(neighbor);
+                    graph.get(neighbor).remove(node);
+                }
+            }
+
+            for(boolean visit : visited)
+            {
+                if (!visit) return false;
+            }
+            return true;
+        }
+}
+
+class Node{
+    int val;
+    Node parent;
+    public Node(int val)
+    {
+        this.val = val;
+    }
+}
+
+public class Solution {
+    Map<Integer, Node> forest;
+
+    public boolean validTree(int n, int[][] edges) {
+        return unionFind(n, edges);
+    }
+
+    private boolean unionFind(int n, int[][] edges)
+    {
+        // make set for each node
+        forest = new HashMap<Integer, Node>();
+        for(int i = 0; i < n; i++)
+            forest.put(i, makeSet(i));
+
+        // for the two vertice of each edge, find if they are in the same set,
+        // If so, there is a cycle, return false.
+        for(int[] edge : edges)
+        {
+            if(find(edge[0]) == find(edge[1]))
+                return false;
+
+            union(edge[0], edge[1]);
+        }
+
+        return edges.length == n - 1;
+    }
+
+    private Node makeSet(int val)
+    {
+        Node node = new Node(val);
+        node.parent = node;
+        return node;
+    }
+
+    private Node find(int node)
+    {
+        if(forest.get(node).parent.val == node)
+            return forest.get(node);
+
+        return find(forest.get(node).parent.val);
+    }
+
+    private void union(int node1, int node2)
+    {
+        Node set1 = find(node1);
+        Node set2 = find(node2);
+        set1.parent = set2;
     }
 }
 
@@ -2437,8 +2807,64 @@ Implement int sqrt(int x).
 
 Compute and return the square root of x.
 */
+
+/* 20 
+Sqrt(x) My Submissions Question
+Total Accepted: 71240 Total Submissions: 298949 Difficulty: Medium
+Implement int sqrt(int x).
+        f(x) = x^2-n; f'(x) = 2x; 
+       tagent line  g(x) = g(x0) + f'(x)*(x-x0) = f(x0) +f'(x0)*(x-x0); 
+         * Next point x1 - x0= (0-f(x0))/f'(x0);
+         * x1 = x0-f(x0)/f'(x0) = x0-(x0^2-n)/(2x0) = (x0/2 + n/x0);
+Compute and return the square root of x.
+*/
+        public int mySqrt(int x)
+        {
+            if (x <= 0) return 0;
+            double cur = x/2;
+            double pre = 0;
+            while (pre != cur)
+            {
+                pre = cur;
+                cur = (cur + x/cur)/2;
+            }
+            return cur;
+        }
+
 public class Solution {
-    public int mySqrt1(int x){
+    public int mySqrt(int x){
+        if(x<= 1) return x;
+        double y = 1;
+        double pre = 0;
+        
+        while(y != pre){
+            pre = y;
+            y = (y + x/y)/2;
+        }
+        return (int)pre;
+    }
+    
+    public int mySqrt1(int x) {
+        if(x <= 0) return 0;
+        if(x == 1) return 1;
+        long l= 0, r = x; 
+        
+        while(l < r){
+            long mid = l + (r-l)/2;
+            if(mid > x/mid) r = mid;
+            else l = mid+1;
+        }
+        
+        return r > x/r ? (int)r-1 : (int)r;
+    }
+    
+    public int mySqrt(int num, int left, int right){
+        int mid = left + (right - left)/2;
+        if(mid == num/mid) return mid;
+        if(mid < num/mid){
+            return (mid+1) > num/(mid+1) ? mid : mySqrt(num, mid, right);
+        }
+        return mySqrt(num, left, mid-1); 
     }
 }
 
@@ -2457,9 +2883,87 @@ A solution is ["cats and dog", "cat sand dog"].
 */
 public class Solution {
     public List<String> wordBreak(String s, Set<String> wordDict) {
+        List<String> dp[] = new ArrayList[s.length()+1];
+        dp[0] = new ArrayList<String>();
+        for(int i = 0; i < s.length(); i++){
+            if(dp[i] == null) continue;
+            for(String word : wordDict){
+                int len = word.length();
+                int end = i+len;
+                if(end > s.length()) continue;
+                if(s.substring(i, end).equals(word)){
+                    if(dp[end] == null) dp[end] = new ArrayList();
+                    dp[end].add(word);
+                }
+            }
+        }
+        List<String> res = new ArrayList();
+        if(dp[s.length()] == null) return res;
+        helper(res, new ArrayList(), dp, s.length());
+        return res;
+    }
+
+    public void helper(List<String> res, List<String> path, List<String>[] dp, int end){
+        if(end <= 0){
+            String ans = path.get(path.size()-1);
+            for(int i = path.size()-2; i >= 0; --i){
+                ans += " " + path.get(i);
+            }
+            res.add(ans);
+            return;
+        }
         
+        for(String str : dp[i]){
+            path.add(str);
+            helper(res, path, dp, end-str.length());
+            path.remove(path.size()-1);
+        }
     }
 }
+
+public class Solution {
+    public static List<String> wordBreak(String s, Set<String> dict) {
+        List<String> dp[] = new ArrayList[s.length()+1];
+        dp[0] = new ArrayList<String>();
+        for(int i=0; i<s.length(); i++){
+            //i是开始位置
+            if( dp[i] == null ) continue; //前面的部分必须是可以匹配的
+            for(String word:dict){
+                int len = word.length();
+                int end = i+len;
+                if(end > s.length()) continue;
+                if(s.substring(i,end).equals(word)){
+                    if(dp[end] == null){
+                        dp[end] = new ArrayList<String>();
+                    }
+                    dp[end].add(word);//记录上一个位置
+                }
+            }
+        }
+ 
+        List<String> ans = new LinkedList<String>();
+        if(dp[s.length()] == null) return ans;
+        ArrayList<String> tmp = new ArrayList<String>();
+        dfsStringList(dp,s.length(),ans, tmp);
+        return ans;
+    }
+ 
+    public static void dfsStringList(List<String> dp[],int end,List<String> res, ArrayList<String> tmp){
+        if(end <= 0){
+            String ans = tmp.get(tmp.size()-1);
+            for(int i=tmp.size()-2; i>=0; i--)
+                ans += (" " + tmp.get(i) );
+            res.add(ans);
+            return;
+        }
+        for(String str:dp[end]){
+            tmp.add(str);
+            dfsStringList(dp,end-str.length(), res, tmp);
+            tmp.remove(tmp.size()-1);
+        }
+    }
+}
+
 
 /*
 Unique Binary Search Trees II My Submissions Question
@@ -2476,8 +2980,50 @@ Given n = 3, your program should return all 5 unique BST's shown below.
    2     1         2                 3
 */
 
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
 public class Solution {
-    public List<TreeNode> generateTrees(int n) {
-        
-    }
+    public List<TreeNode> generateTrees(int n)
+        {
+            List<TreeNode> dp[] = new ArrayList[n+1];
+            dp[0] = new ArrayList();
+            dp[0].add(null);
+            if(n==0) return dp[0];
+            dp[1] = new ArrayList();
+            dp[1].add(new TreeNode(1));
+            for (int i = 2; i <= n; i++)
+            {
+                dp[i] = new ArrayList();
+                for (int j = 0; j < i; j++)
+                {
+                    for (TreeNode left : dp[j])
+                    {
+                        for(TreeNode right : dp[i-j-1])
+                        {
+                            TreeNode root = new TreeNode(j+1);
+                            root.left = left;
+                            root.right = buildTree(right, j+1);
+                            dp[i].add(root);
+                        }
+                    }
+                }
+            }
+            return dp[n];
+        }
+
+        public TreeNode buildTree(TreeNode n, int offset)
+        {
+            if (n == null) return null;
+            TreeNode node = new TreeNode(n.val + offset);
+            node.left = buildTree(n.left, offset);
+            node.right = buildTree(n.right, offset);
+            return node;
+        }
 }

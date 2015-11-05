@@ -148,9 +148,27 @@ public class Solution {
 // 6 Divide two integers without using multiplication, division and mod operator.
 
 // If it is overflow, return MAX_INT.
+// 134 4  8 16 32 64 128
+//     1 2 4 8 16 32 
 public class Solution {
     public int divide(int dividend, int divisor) {
-        
+        if(divisor == 0 || (divisor == 1 && dividend == Integer.MIN_VALUE)) return Integer.MAX_VALUE;
+        int sign = (dividend < 0) ^ (divisor < 0) ? -1 : 1;
+        long did = Math.abs((long)dividend);
+        long dis = Math.abs((long)divisor);
+        if(did < dis) return 0;
+        long res = 1;
+        long num = dis;
+        while((num << 1) <= did){
+            num <<= 1;
+            res <<= 1;
+        }
+        num = did - num;
+        while(num >= dis){
+            num -= dis;
+            res++;
+        }
+        return (int)(res*sign);
     }
 }
 
