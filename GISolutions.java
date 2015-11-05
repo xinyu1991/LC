@@ -2818,15 +2818,15 @@ Implement int sqrt(int x).
          * x1 = x0-f(x0)/f'(x0) = x0-(x0^2-n)/(2x0) = (x0/2 + n/x0);
 Compute and return the square root of x.
 */
-        public int mySqrt1(int x)
+        public int mySqrt(int x)
         {
             if (x <= 0) return 0;
-            int cur = x/2;
-            int pre = 0;
+            double cur = x/2;
+            double pre = 0;
             while (pre != cur)
             {
                 pre = cur;
-                cur = (cur/2 + x/(2*cur));
+                cur = (cur + x/cur)/2;
             }
             return cur;
         }
@@ -2980,8 +2980,50 @@ Given n = 3, your program should return all 5 unique BST's shown below.
    2     1         2                 3
 */
 
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
 public class Solution {
-    public List<TreeNode> generateTrees(int n) {
-        
-    }
+    public List<TreeNode> generateTrees(int n)
+        {
+            List<TreeNode> dp[] = new ArrayList[n+1];
+            dp[0] = new ArrayList();
+            dp[0].add(null);
+            if(n==0) return dp[0];
+            dp[1] = new ArrayList();
+            dp[1].add(new TreeNode(1));
+            for (int i = 2; i <= n; i++)
+            {
+                dp[i] = new ArrayList();
+                for (int j = 0; j < i; j++)
+                {
+                    for (TreeNode left : dp[j])
+                    {
+                        for(TreeNode right : dp[i-j-1])
+                        {
+                            TreeNode root = new TreeNode(j+1);
+                            root.left = left;
+                            root.right = buildTree(right, j+1);
+                            dp[i].add(root);
+                        }
+                    }
+                }
+            }
+            return dp[n];
+        }
+
+        public TreeNode buildTree(TreeNode n, int offset)
+        {
+            if (n == null) return null;
+            TreeNode node = new TreeNode(n.val + offset);
+            node.left = buildTree(n.left, offset);
+            node.right = buildTree(n.right, offset);
+            return node;
+        }
 }
