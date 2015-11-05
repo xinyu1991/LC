@@ -193,10 +193,27 @@ You are given a target value to search. If found in the array return its index, 
 
 You may assume no duplicate exists in the array.
 */
-
+// 3 1 , 1 
 public class Solution {
     public int search(int[] nums, int target) {
-
+        int l = 0, r = nums.length-1;
+        while(l < r){
+            int mid = (l+r)/2;
+            if(nums[mid]==target) return mid;
+            if(nums[mid] >= nums[l]){
+                if (nums[mid] > target && nums[l] <= target){
+                    r = mid;
+                }
+                else l = mid+1;
+            } 
+            else{
+                if(nums[mid] < target && nums[r] >= target){
+                    l = mid+1;
+                }
+                else r = mid;
+            }
+        }
+        return nums[l] == target ? l : -1;
     }
 }
 
@@ -446,6 +463,7 @@ If there are multiple such windows, you are guaranteed that there will always be
 */
 public class Solution {
     public String minWindow(String s, String t) {
+
     }
 }
 
@@ -589,8 +607,26 @@ return
 ]
 */
 public class Solution {
-    public List<List<Integer>> pathSum(TreeNode root, int sum) {
-    }
+    public List<List<Integer>> pathSum(TreeNode root, int sum)
+        {
+            List<List<Integer>> res = new ArrayList();
+            if (root == null) return res;
+            helper(res, new ArrayList(), root, sum, 0);
+            return res;
+        }
+
+        public void helper(List<List<Integer>> res, List<Integer> path, TreeNode root, int target, int sum)
+        {
+            path.add(root.val);
+            if (root.left == null && root.right == null)
+            {
+                if (sum + root.val == target) res.add(new ArrayList(path));
+            }
+
+            if (root.left != null) helper(res, path, root.left, target, sum + root.val);
+            if (root.right != null) helper(res, path, root.right, target, sum + root.val);
+            path.remove(path.size() - 1);
+        }
 }
 
 /* 34
@@ -629,6 +665,33 @@ Return 6.
 public class Solution {
     int maxSum = Integer.MIN_VALUE;
     public int maxPathSum(TreeNode root) {
+        if(root == null) return 0;
+        helper(root);
+        return maxSum;
+    }
+    public int helper(TreeNode root){
+        if(root == null) return 0;
+        int leftSum = Math.max(0, helper(root.left));
+        int rightSum = Math.max(0, helper(root.right));
+        maxSum = Math.max(maxSum, leftSum+rightSum+root.val);
+        return root.val + Math.max(leftSum, rightSum);
+    }
+}
+
+public class Solution {
+    int maxSum = Integer.MIN_VALUE;
+    public int maxPathSum(TreeNode root) {
+        if(root == null) return 0;
+        maxPathSumRec(root);
+        return maxSum;
+    }
+    
+    public int maxPathSumRec(TreeNode node){
+        if(node == null) return 0;
+        int left = Math.max(0, maxPathSumRec(node.left));
+        int right = Math.max(0, maxPathSumRec(node.right));
+        maxSum = Math.max(maxSum, left+right+node.val);
+        return Math.max(left, right) + node.val;
     }
 }
 
@@ -656,6 +719,7 @@ All words contain only lowercase alphabetic characters.
 */
 public class Solution {
     public List<List<String>> findLadders(String beginWord, String endWord, Set<String> wordList) {
+
     }
 }
 
@@ -669,11 +733,78 @@ Return the minimum cuts needed for a palindrome partitioning of s.
 
 For example, given s = "aab",
 Return 1 since the palindrome partitioning ["aa","b"] could be produced using 1 cut.
+aaaabbbaacccc
 */
+public class Solution {
+    public int minCut(String s){
+        int len = s.length();
+        int[] dp = new int[len+1];
+        boolean[][] isPalindrome = new boolean[len][len];
+
+        for(int i = 0; i < len; i++){
+            dp[i+1] = i;
+            for(int j = 0; j <= i; j++){
+                if(s.charAt(i) == s.charAt(j)){
+                    if(i-j < 2 || isPalindrome[j+1][i-1]){
+                        isPalindrome[j][i] = true;
+                        if(j==0) dp[i+1] = 0;
+                        else dp[i+1] = Math.min(dp[i+1], dp[j]+1);
+                    }
+                }
+            }
+        }
+        return dp[len];
+    }
+
+
+    public int minCut(String s) {
+        int len = s.length();
+        int[] dp = new int[len + 1];
+        boolean[][] p = new boolean[len+1][len+1];
+        for (int i = 1; i <= len; i++) {
+            dp[i] = i;
+            for (int j = 1; j <= i; j++) {
+                if (s.charAt(i-1) == s.charAt(j-1)) {
+                    if (i - j < 2 || p[j+1][i-1]) {
+                        p[j][i] = true;
+                        if (j==1) dp[i] = 0;
+                        else {
+                            dp[i] = Math.min(dp[i], dp[j-1]+1);
+                        }
+                    }
+                }
+            }
+        }
+        return dp[len];
+    }
+}
 
 public class Solution {
+    int min = 0;
     public int minCut(String s) {
+        min = s.length()-1;
+        helper(s, 0, 0);
+        return min;
+    }
 
+    public void helper(String s, int startIndex, int count){
+        if(startIndex == s.length()){
+            min = Math.min(min, count);
+        }
+        for(int i = startIndex; i < s.length(); i++){
+            String cur = s.substring(startIndex, i+1);
+            if(isPalindrome(s)){
+                helper(s, i+1, count+1);
+            }
+        }
+    }
+
+    public boolean isPalindrome(String s){
+        int left = 0, right = s.length()-1;
+        while(left < right){
+            if(s.charAt(left++) != s.charAt(right--)) return false;
+        }
+        return true;
     }
 }
 
@@ -736,6 +867,20 @@ Your algorithm should have a linear runtime complexity. Could you implement it w
 */
 public class Solution {
     public int singleNumber(int[] nums) {
+        int[] bitCounts = new int[32];
+
+        for(int num : nums){
+            for (int i = 0; i < 32; i++)
+            {
+                if (((num >> i) & 1) == 1) bitCounts[i]++;
+            }
+        }
+        int res = 0;
+        for(int i = 0; i < 32; i++)
+        {
+            if(bitCounts[i] % 3 == 1) res += 1 << i;
+        }
+        return res;
     }
 }
 
@@ -780,7 +925,9 @@ public class Solution {
 }
 
 /* 43
-Given a binary tree where all the right nodes are either leaf nodes with a sibling (a left node that shares the same parent node) or empty, flip it upside down and turn it into a tree where the original right nodes turned into left leaf nodes. Return the new root.
+Given a binary tree where all the right nodes are either leaf nodes with a sibling 
+(a left node that shares the same parent node) or empty, 
+flip it upside down and turn it into a tree where the original right nodes turned into left leaf nodes. Return the new root.
 
 For example:
 Given a binary tree {1,2,3,4,5},
@@ -799,14 +946,47 @@ return the root of the binary tree [4,5,2,#,#,3,1].
 
 public class Solution {
     public TreeNode upsideDownBinaryTree(TreeNode root) {
-        
+        if(root == null || (root.left == null && root.right == null)) return root;
+        Stack<TreeNode> stack = new Stack();
+        while(root != null){
+            stack.push(root);
+            root = root.left;
+        }
+        TreeNode newRoot = stack.pop();
+        TreeNode node = newRoot;
+
+        while(!stack.isEmpty()){
+            TreeNode right = stack.pop();
+            TreeNode left = right.right;
+            node.left = left;
+            node.right = right;
+            right.left = null;
+            right.right = null;
+            node = right;
+        }
+        return newRoot;
     }
+
 }
 
 // 44 Given two strings S and T, determine if they are both one edit distance apart.
 public class Solution {
     public boolean isOneEditDistance(String s, String t) {
-        
+        int slen = s.length(), tlen = t.length();
+        if(slen > tlen) return isOneEditDistance(t, s);
+        if(tlen - slen > 1) return false;
+        boolean mismatched = false;
+        for(int i = 0; i < slen; i++){
+            if(s.charAt(i) != t.charAt(i)){
+                if(slen == tlen){
+                    s = s.substring(0,i)+t.charAt(i)+s.substring(i+1);
+                }
+                else s = s.substring(0, i) + t.charAt(i) + s.substring(i);
+                mismatched = true;
+                break;
+            }
+        }
+        return (mismatched && s.equals(t)) || (!mismatched && (tlen == slen+1));
     }
 }
 
@@ -822,6 +1002,7 @@ Return 0 if the array contains less than 2 elements.
 
 You may assume all elements in the array are non-negative integers and fit in the 32-bit signed integer range.
 */
+// Bucket Sort.
 public class Solution {
     public int maximumGap(int[] nums) {
     }
@@ -973,6 +1154,7 @@ Contains Duplicate III My Submissions Question
 Total Accepted: 15996 Total Submissions: 94946 Difficulty: Medium
 Given an array of integers, find out whether there are two distinct indices i and j in the array such that the difference between nums[i] and nums[j] is at most t and the difference between i and j is at most k.
 */
+// TreeSet
 public class Solution {
     public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
     }
@@ -981,8 +1163,64 @@ public class Solution {
 /* 50
 Given an integer array of size n, find all elements that appear more than ⌊ n/3 ⌋ times. The algorithm should run in linear time and in O(1) space.
 */
+// [2,2,1,3]
 public class Solution {
     public List<Integer> majorityElement(int[] nums) {
+        if(nums == null || nums.length == 0) return new ArrayList();
+        return majorityElement(nums, 2);
+    }
+
+    public List<Integer> majorityElement(int[] nums, int k)
+    {
+        int[] candidates = new int[k], counts = new int[k];
+
+        for (int i = 0; i < nums.length; i++)
+        {
+            int cur = nums[i];
+            boolean hasCandidate = false;
+            for (int j = 0; j < k; j++)
+            {
+                if (cur == candidates[j])
+                {
+                    counts[j]++;
+                    hasCandidate = true;
+                    break;
+                }
+            }
+            if (!hasCandidate)
+            {
+                boolean candidateUpdate = false;
+                for (int j = 0; j < k; j++)
+                {
+                    if (counts[j] == 0)
+                    {
+                        candidates[j] = cur;
+                        counts[j] = 1;
+                        candidateUpdate = true;
+                        break;
+                    }
+                }
+                if (!candidateUpdate)
+                {
+                    for (int j = 0; j < k; j++) counts[j]--;
+                }
+            }
+        }
+        List<Integer> res = new ArrayList();
+        Arrays.fill(counts, 0);
+        for (int i = 0; i < nums.length; i++){
+            for(int j = 0; j < k; j++){
+                if(nums[i] == candidates[j]) {
+                    counts[j]++;
+                    break;
+                }
+            }
+        }
+        for (int i = 0; i < k; i++)
+        {
+            if(counts[i] > nums.length/(k+1)) res.add(candidates[i]);
+        }
+        return res;
     }
 }
 
@@ -1002,7 +1240,9 @@ public class Solution {
 /* 52 
 Sliding Window Maximum My Submissions Question
 Total Accepted: 14556 Total Submissions: 61429 Difficulty: Hard
-Given an array nums, there is a sliding window of size k which is moving from the very left of the array to the very right. You can only see the k numbers in the window. Each time the sliding window moves right by one position.
+Given an array nums, there is a sliding window of size k 
+which is moving from the very left of the array to the very right. 
+You can only see the k numbers in the window. Each time the sliding window moves right by one position.
 
 For example,
 Given nums = [1,3,-1,-3,5,3,6,7], and k = 3.
@@ -1019,6 +1259,23 @@ Therefore, return the max sliding window as [3,3,5,5,6,7].
 */
 public class Solution {
     public int[] maxSlidingWindow(int[] nums, int k) {
+        if (nums == null || k <= 0) {
+            return new int[0];
+        }
+        Deque<Integer> queue = new ArrayDeque();
+        int[] res = new int[nums.length-k+1];
+        int index = 0;
+        for(int i = 0; i < nums.length; i++){
+            if(!queue.isEmpty() && i - queue.peek() > k-1) queue.poll();
+            while(!queue.isEmpty() && nums[i] > nums[queue.peekLast()]) {
+                queue.pollLast();
+            }
+            queue.offer(i);
+            if(i>=k-1){
+                res[index++] = nums[queue.peek()];
+            }
+        }
+        return res;
     }
 }
 
@@ -1079,6 +1336,20 @@ public class Solution {
         // Do not contain any operator, just return the value.
         if(res.isEmpty()) res.add(Integer.valueOf(input));
         return res;
+    }
+}
+
+public class Solution extends Relation {
+    public int findCelebrity(int n) {
+        int candidate = 0;
+        for(int i = 1; i < n; i++){
+            if(knows(candidate, i))
+                candidate = i;
+        }
+        for(int i = 0; i < n; i++){
+            if(i != candidate && (knows(candidate, i) || !knows(i, candidate))) return -1;
+        }
+        return candidate;
     }
 }
 

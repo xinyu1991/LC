@@ -89,14 +89,16 @@ GOOGLE SEATTLE 一共5轮
 
 1.韩国人，很NICE，谈得挺开心，上来先BEHAVIORAL，然后问了一堆小问题，比如如何generate unique id,如何SCALE KEY-VALUE STORAGE.
 Mac-Address with timestamp 
-
+MessageDigest
 2.好像是美国人，考了READ1024-CALL MULTIPLE TIMES ， 由于OJ上要收钱，没看，CODE写的一塌糊涂。
 
 3.国人姐姐，很NICE，中间开始讲中文，考了CELEBRITY FINDING，CODE在引导之下写出WORST CASE O(N)，表现的也差强人意。 !!!
 
 4.美国人带SHADOW，上来考了个CUP装水的问题，FOUNTAIN MACHINE有不同的optION对应不同出水量，出水量是个RANGE，CUP VOLUME也是RANGE，求可能的SEQUENCE，简单RECURSION搞定。
+   http://www.careercup.com/question?id=15299689
    然后考了TWITTER FEED的设计，答得不好，后来网上找好像需要用到PUB/SUB的概念，但是还是没找到好的REFERENCE，希望有高人有LINK或者给我解释下。
-
+https://www.quora.com/Software-Engineering-Best-Practices/What-are-the-best-practices-for-building-something-like-a-News-Feed
+http://backchannel.org/blog/friendfeed-schemaless-mysql
 5.美国人，考了POW和找H-INDEX，最后H-INDEX勉强写出O(N),发挥的还行吧。 !!!!
 
 
@@ -201,3 +203,87 @@ given sorted array of doubles, return the another sorted array of doubles where 
 Two pointers from both sides, moving towards middle
 
 26. 输出任意permutation使得List中的相同element的间距要小于 minDistance。 (The same idea as No. 24, just change the distance from 1 to K)
+
+27. 然后出了道题, 一个2d array of char, 'X'表示不能走, " "表示草地, 给一个初始x,y 然后把所有的草除掉并回到原点. 
+要求的是,每走一步打印一个方向, 最后打印出所有的方向... 想到了是dfs, 
+但是卡在往回走的过程了... 最后没写出全部的代码, 还被大叔嘲讽了.. 其实并不太难, dfs 可以解决. 主要是题目略长,然后时间比较不够了, 这种题套模板会比较快.
+class Solution:
+    def printPath(self, board, x, y):
+        buf = [(x,y)]
+        visited = set(buf)
+        result = []
+        dir = [(-1,0), (1,0), (0,-1), (0,1)]
+        while buf:
+            cur = buf[-1]
+            flag = False
+            for d in dir:
+                n_x, n_y = cur[0]+d[0], cur[1]+d[1]
+                if self.isValid(board, n_x, n_y) and not (n_x, n_y) in visited:
+                    result.append(d)
+                    buf.append((n_x, n_y))
+                    visited.add((n_x, n_y))
+                    flag = True
+                    break
+            if not flag:
+                cur = buf.pop()
+                if buf:
+                    result.append((buf[-1][0]-cur[0], buf[-1][1]-cur[1]))
+
+        return result
+
+    def isValid(self, board, x, y):
+        if x<0 or x>=len(board) or y<0 or y>=len(board[0]):
+            return False
+        if board[x][y]=='x':
+            return False
+        return True
+sol = Solution()
+result = sol.printPath(["x  x", "xx  ", "x   ", "    "], 0, 1)
+print(result)
+
+
+
+
+水校无实习背景，这波找工作还是很苦逼的，大部分公司连面试都不愿意给，能拿到google的机会还是挺高兴的。面试在youtube的一栋楼。
+第一轮：
+白人老太太，9年码工，题目是给一堆系统路径，类似“/abc/xyz/hij/f1”，找最长公共路径。
+我说了longest common prefix的，她说怎么优化，于是说字典树，又问是不是要建完整的一颗树，于是说不用，发现要分叉了就标记一下跳出，
+然后从根节点找到高度最低的分叉点就是公共路径，代码没写完，最后一段写了伪代码。
+第二轮：
+中国大哥，感觉非常亲切。题目是给一个function叫next()，返回的是多叉树的一条边，类似(m,n)，m是父节点n是子节点，让建立这棵树。
+开始说先遍历一遍存成一个图，然后用拓扑排序的思路。然后在大量边的情况下优化，于是说用一个哈希表存节点指针，
+对于一条边，先拿到父节点（不存在就建一个插进去），然后拿子节点（不存在就插进去），把这两个点连起来，并保存父节点关系。最后遍历哈希表找到根节点。代码写完有个小bug不过小哥说可以了。
+午饭：
+台湾小哥，各种聊
+第三轮：
+白人小哥，穿着紫色女巫的紧身镂空连衣裙带着法师帽就进来了。。。
+题目是给一堆people，每人有skills，再给一堆tasks，每个有需要的skills，返回bool值是否所有任务都可完成。然后一通讨论corner case。follow up问people之间不能合作怎么做。这个代码没写完，中午有点懵，反应也慢了。时间一到被小哥打断拍照走人。
+第四轮：
+白人程序媛，leetcode原题，判断一个数旋转180度还是不是本身，数是string形式的。follow up就是给个N，然后返回所有长度小于等于N的满足旋转条件的字符串。写完代码后聊了两分钟结束。
+
+
+
+ 一个sorted array,找出现次数大于n/4的popular number，n是数组长度。写了O(n)之后要求优化时间复杂度，想优化成O(logn)不过要分成四份再找想的有点复杂
+11 12 222 24 44 444 666 66
+1 1 2 2
+I would do it with similar approach as binary search.
+
+At first I would find values of 8 numbers which would be on 0/8, 1/8, 2/8 ... 8/8 of array. 
+The same numbers you find first when you binary search for something.
+
+As the same number must be in n/4 of array size or higher, 
+it must reach at least two of that boundaries in row. Like number at 2/8 and 3/8 is same.
+
+Therefore this identification of number and partially position is done in constant time.
+
+Then you just continue to find where it start and where it ends, which is typical binary search.
+
+Complexity : O(log n)
+
+
+Distributed Hash Table
+Eventual Consistency vs Strong Consistency
+Read Heavy vs Write Heavy
+Consistent Hashing
+Sticky Sessions
+Structured Data(uses DynamoDB) vs Unstructured Data(uses S3)
